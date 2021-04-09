@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b17082238aa6482c9d7d81bb6cb98149" Name="Diagram1">
+        <EntityTypeShape EntityType="sgaModel.acudiente" Width="1.5" PointX="1.5" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.administrador" Width="1.5" PointX="6" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.alumno" Width="1.5" PointX="0.75" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.alumno_clase" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.calificaciones" Width="1.5" PointX="0.75" PointY="18.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.clase" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.dias" Width="1.5" PointX="6" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.docente" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.horario" Width="1.5" PointX="8.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.materia" Width="1.5" PointX="3.75" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.periodo" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
+        <AssociationConnector Association="sgaModel.alumno_alumno_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.alumno_clase_alumno_clase_ibfk_2" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.alumno_clase_alumno_clase_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.alumno_clase_alumno_clase_ibfk_3" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.alumno_clase_alumno_clase_ibfk_4" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.clase_clase_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.clase_clase_ibfk_2" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.clase_clase_ibfk_3" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.horario_horario_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="sgaModel.horario_horario_ibfk_2" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

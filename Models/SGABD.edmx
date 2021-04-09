@@ -1,0 +1,818 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="acudiente">
+          <Key>
+            <PropertyRef Name="Acu_ID" />
+          </Key>
+          <Property Name="Acu_ID" Type="bigint" Nullable="false" />
+          <Property Name="Acu_Doc" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Acu_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Acu_Apel" Type="int" Nullable="false" />
+          <Property Name="Acu_Tel" Type="int" Nullable="false" />
+          <Property Name="Acu_Email" Type="int" Nullable="false" />
+          <Property Name="Acu_Passw" Type="int" Nullable="false" />
+          <Property Name="Acu_FecReg" Type="date" Nullable="false" />
+          <Property Name="Acu_Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="administrador">
+          <Key>
+            <PropertyRef Name="Adm_ID" />
+          </Key>
+          <Property Name="Adm_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Adm_Doc" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adm_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adm_Apel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adm_Tel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adm_Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Adm_Passw" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Adm_FecReg" Type="date" Nullable="false" />
+          <Property Name="Adm_Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="alumno">
+          <Key>
+            <PropertyRef Name="Alum_ID" />
+          </Key>
+          <Property Name="Alum_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Alum_Doc" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="Alum_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Alum_Apel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Alum_Tel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Alum_Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Alum_Passw" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Alum_FecReg" Type="date" Nullable="false" />
+          <Property Name="Alum_Status" Type="int" Nullable="false" />
+          <Property Name="Acu_ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="alumno_clase">
+          <Key>
+            <PropertyRef Name="Alcl_ID" />
+          </Key>
+          <Property Name="Alcl_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Alum_ID" Type="bigint" Nullable="false" />
+          <Property Name="Per_ID" Type="bigint" Nullable="false" />
+          <Property Name="Clas_ID" Type="bigint" Nullable="false" />
+          <Property Name="Cal_ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="calificaciones">
+          <Key>
+            <PropertyRef Name="Cal_ID" />
+          </Key>
+          <Property Name="Cal_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cal_N1" Type="float" Nullable="false" />
+          <Property Name="Cal_N2" Type="float" Nullable="false" />
+          <Property Name="Cal_N3" Type="float" Nullable="false" />
+          <Property Name="Cal_NF" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="clase">
+          <Key>
+            <PropertyRef Name="Clas_ID" />
+          </Key>
+          <Property Name="Clas_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mat_ID" Type="bigint" Nullable="false" />
+          <Property Name="Doc_ID" Type="bigint" Nullable="false" />
+          <Property Name="Clas_Capa" Type="int" Nullable="false" />
+          <Property Name="Per_ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="dias">
+          <Key>
+            <PropertyRef Name="Dia_ID" />
+          </Key>
+          <Property Name="Dia_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Dia_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="docente">
+          <Key>
+            <PropertyRef Name="Doc_ID" />
+          </Key>
+          <Property Name="Doc_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Doc_Doc" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Doc_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Doc_Apel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Doc_Tel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Doc_Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Doc_Passw" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Doc_FecReg" Type="date" Nullable="false" />
+          <Property Name="Doc_Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="horario">
+          <Key>
+            <PropertyRef Name="Hor_ID" />
+          </Key>
+          <Property Name="Hor_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Dia_ID" Type="bigint" Nullable="false" />
+          <Property Name="Hor_Ini" Type="date" Nullable="false" />
+          <Property Name="Hor_Fin" Type="date" Nullable="false" />
+          <Property Name="Clas_ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="materia">
+          <Key>
+            <PropertyRef Name="Mat_ID" />
+          </Key>
+          <Property Name="Mat_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mat_Nom" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="Mat_Desc" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="periodo">
+          <Key>
+            <PropertyRef Name="Per_ID" />
+          </Key>
+          <Property Name="Per_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Per_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Per_Ini" Type="date" Nullable="false" />
+          <Property Name="Per_Fin" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="alumno$alumno_ibfk_1">
+          <End Role="acudiente" Type="Self.acudiente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno" Type="Self.alumno" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="acudiente">
+              <PropertyRef Name="Acu_ID" />
+            </Principal>
+            <Dependent Role="alumno">
+              <PropertyRef Name="Acu_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase$alumno_clase_ibfk_1">
+          <End Role="calificaciones" Type="Self.calificaciones" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calificaciones">
+              <PropertyRef Name="Cal_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Cal_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase$alumno_clase_ibfk_2">
+          <End Role="alumno" Type="Self.alumno" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="alumno">
+              <PropertyRef Name="Alum_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Alum_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase$alumno_clase_ibfk_3">
+          <End Role="periodo" Type="Self.periodo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="periodo">
+              <PropertyRef Name="Per_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Per_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase$alumno_clase_ibfk_4">
+          <End Role="clase" Type="Self.clase" Multiplicity="1" />
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="clase$clase_ibfk_1">
+          <End Role="periodo" Type="Self.periodo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="periodo">
+              <PropertyRef Name="Per_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Per_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="clase$clase_ibfk_2">
+          <End Role="materia" Type="Self.materia" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="materia">
+              <PropertyRef Name="Mat_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Mat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="clase$clase_ibfk_3">
+          <End Role="docente" Type="Self.docente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="docente">
+              <PropertyRef Name="Doc_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Doc_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="horario$horario_ibfk_1">
+          <End Role="clase" Type="Self.clase" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="horario" Type="Self.horario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="horario">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="horario$horario_ibfk_2">
+          <End Role="dias" Type="Self.dias" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="horario" Type="Self.horario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dias">
+              <PropertyRef Name="Dia_ID" />
+            </Principal>
+            <Dependent Role="horario">
+              <PropertyRef Name="Dia_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="sgaModelStoreContainer">
+          <EntitySet Name="acudiente" EntityType="Self.acudiente" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="administrador" EntityType="Self.administrador" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="alumno" EntityType="Self.alumno" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="alumno_clase" EntityType="Self.alumno_clase" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="calificaciones" EntityType="Self.calificaciones" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="clase" EntityType="Self.clase" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="dias" EntityType="Self.dias" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="docente" EntityType="Self.docente" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="horario" EntityType="Self.horario" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="materia" EntityType="Self.materia" Schema="sga" store:Type="Tables" />
+          <EntitySet Name="periodo" EntityType="Self.periodo" Schema="sga" store:Type="Tables" />
+          <AssociationSet Name="alumno$alumno_ibfk_1" Association="Self.alumno$alumno_ibfk_1">
+            <End Role="acudiente" EntitySet="acudiente" />
+            <End Role="alumno" EntitySet="alumno" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase$alumno_clase_ibfk_1" Association="Self.alumno_clase$alumno_clase_ibfk_1">
+            <End Role="calificaciones" EntitySet="calificaciones" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase$alumno_clase_ibfk_2" Association="Self.alumno_clase$alumno_clase_ibfk_2">
+            <End Role="alumno" EntitySet="alumno" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase$alumno_clase_ibfk_3" Association="Self.alumno_clase$alumno_clase_ibfk_3">
+            <End Role="periodo" EntitySet="periodo" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase$alumno_clase_ibfk_4" Association="Self.alumno_clase$alumno_clase_ibfk_4">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="clase$clase_ibfk_1" Association="Self.clase$clase_ibfk_1">
+            <End Role="periodo" EntitySet="periodo" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="clase$clase_ibfk_2" Association="Self.clase$clase_ibfk_2">
+            <End Role="materia" EntitySet="materia" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="clase$clase_ibfk_3" Association="Self.clase$clase_ibfk_3">
+            <End Role="docente" EntitySet="docente" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="horario$horario_ibfk_1" Association="Self.horario$horario_ibfk_1">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="horario" EntitySet="horario" />
+          </AssociationSet>
+          <AssociationSet Name="horario$horario_ibfk_2" Association="Self.horario$horario_ibfk_2">
+            <End Role="dias" EntitySet="dias" />
+            <End Role="horario" EntitySet="horario" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="sgaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="acudiente">
+          <Key>
+            <PropertyRef Name="Acu_ID" />
+          </Key>
+          <Property Name="Acu_ID" Type="Int64" Nullable="false" />
+          <Property Name="Acu_Doc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Acu_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Acu_Apel" Type="Int32" Nullable="false" />
+          <Property Name="Acu_Tel" Type="Int32" Nullable="false" />
+          <Property Name="Acu_Email" Type="Int32" Nullable="false" />
+          <Property Name="Acu_Passw" Type="Int32" Nullable="false" />
+          <Property Name="Acu_FecReg" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Acu_Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="alumno" Relationship="Self.alumno_alumno_ibfk_1" FromRole="acudiente" ToRole="alumno" />
+        </EntityType>
+        <EntityType Name="administrador">
+          <Key>
+            <PropertyRef Name="Adm_ID" />
+          </Key>
+          <Property Name="Adm_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Adm_Doc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adm_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adm_Apel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adm_Tel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adm_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adm_Passw" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adm_FecReg" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Adm_Status" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="alumno">
+          <Key>
+            <PropertyRef Name="Alum_ID" />
+          </Key>
+          <Property Name="Alum_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Alum_Doc" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alum_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alum_Apel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alum_Tel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alum_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alum_Passw" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alum_FecReg" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Alum_Status" Type="Int32" Nullable="false" />
+          <Property Name="Acu_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="acudiente" Relationship="Self.alumno_alumno_ibfk_1" FromRole="alumno" ToRole="acudiente" />
+          <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_2" FromRole="alumno" ToRole="alumno_clase" />
+        </EntityType>
+        <EntityType Name="alumno_clase">
+          <Key>
+            <PropertyRef Name="Alcl_ID" />
+          </Key>
+          <Property Name="Alcl_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Alum_ID" Type="Int64" Nullable="false" />
+          <Property Name="Per_ID" Type="Int64" Nullable="false" />
+          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
+          <Property Name="Cal_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="alumno" Relationship="Self.alumno_clase_alumno_clase_ibfk_2" FromRole="alumno_clase" ToRole="alumno" />
+          <NavigationProperty Name="calificaciones" Relationship="Self.alumno_clase_alumno_clase_ibfk_1" FromRole="alumno_clase" ToRole="calificaciones" />
+          <NavigationProperty Name="periodo" Relationship="Self.alumno_clase_alumno_clase_ibfk_3" FromRole="alumno_clase" ToRole="periodo" />
+          <NavigationProperty Name="clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_4" FromRole="alumno_clase" ToRole="clase" />
+        </EntityType>
+        <EntityType Name="calificaciones">
+          <Key>
+            <PropertyRef Name="Cal_ID" />
+          </Key>
+          <Property Name="Cal_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cal_N1" Type="Double" Nullable="false" />
+          <Property Name="Cal_N2" Type="Double" Nullable="false" />
+          <Property Name="Cal_N3" Type="Double" Nullable="false" />
+          <Property Name="Cal_NF" Type="Double" Nullable="false" />
+          <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_1" FromRole="calificaciones" ToRole="alumno_clase" />
+        </EntityType>
+        <EntityType Name="clase">
+          <Key>
+            <PropertyRef Name="Clas_ID" />
+          </Key>
+          <Property Name="Clas_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mat_ID" Type="Int64" Nullable="false" />
+          <Property Name="Doc_ID" Type="Int64" Nullable="false" />
+          <Property Name="Clas_Capa" Type="Int32" Nullable="false" />
+          <Property Name="Per_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_4" FromRole="clase" ToRole="alumno_clase" />
+          <NavigationProperty Name="periodo" Relationship="Self.clase_clase_ibfk_1" FromRole="clase" ToRole="periodo" />
+          <NavigationProperty Name="materia" Relationship="Self.clase_clase_ibfk_2" FromRole="clase" ToRole="materia" />
+          <NavigationProperty Name="docente" Relationship="Self.clase_clase_ibfk_3" FromRole="clase" ToRole="docente" />
+          <NavigationProperty Name="horario" Relationship="Self.horario_horario_ibfk_1" FromRole="clase" ToRole="horario" />
+        </EntityType>
+        <EntityType Name="dias">
+          <Key>
+            <PropertyRef Name="Dia_ID" />
+          </Key>
+          <Property Name="Dia_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Dia_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="horario" Relationship="Self.horario_horario_ibfk_2" FromRole="dias" ToRole="horario" />
+        </EntityType>
+        <EntityType Name="docente">
+          <Key>
+            <PropertyRef Name="Doc_ID" />
+          </Key>
+          <Property Name="Doc_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Doc_Doc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Doc_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Doc_Apel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Doc_Tel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Doc_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Doc_Passw" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Doc_FecReg" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Doc_Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="clase" Relationship="Self.clase_clase_ibfk_3" FromRole="docente" ToRole="clase" />
+        </EntityType>
+        <EntityType Name="horario">
+          <Key>
+            <PropertyRef Name="Hor_ID" />
+          </Key>
+          <Property Name="Hor_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Dia_ID" Type="Int64" Nullable="false" />
+          <Property Name="Hor_Ini" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Hor_Fin" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="clase" Relationship="Self.horario_horario_ibfk_1" FromRole="horario" ToRole="clase" />
+          <NavigationProperty Name="dias" Relationship="Self.horario_horario_ibfk_2" FromRole="horario" ToRole="dias" />
+        </EntityType>
+        <EntityType Name="materia">
+          <Key>
+            <PropertyRef Name="Mat_ID" />
+          </Key>
+          <Property Name="Mat_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mat_Nom" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Mat_Desc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="clase" Relationship="Self.clase_clase_ibfk_2" FromRole="materia" ToRole="clase" />
+        </EntityType>
+        <EntityType Name="periodo">
+          <Key>
+            <PropertyRef Name="Per_ID" />
+          </Key>
+          <Property Name="Per_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Per_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Per_Ini" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Per_Fin" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_3" FromRole="periodo" ToRole="alumno_clase" />
+          <NavigationProperty Name="clase" Relationship="Self.clase_clase_ibfk_1" FromRole="periodo" ToRole="clase" />
+        </EntityType>
+        <Association Name="alumno_alumno_ibfk_1">
+          <End Role="acudiente" Type="Self.acudiente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno" Type="Self.alumno" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="acudiente">
+              <PropertyRef Name="Acu_ID" />
+            </Principal>
+            <Dependent Role="alumno">
+              <PropertyRef Name="Acu_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase_alumno_clase_ibfk_2">
+          <End Role="alumno" Type="Self.alumno" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="alumno">
+              <PropertyRef Name="Alum_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Alum_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase_alumno_clase_ibfk_1">
+          <End Role="calificaciones" Type="Self.calificaciones" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calificaciones">
+              <PropertyRef Name="Cal_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Cal_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase_alumno_clase_ibfk_3">
+          <End Role="periodo" Type="Self.periodo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="periodo">
+              <PropertyRef Name="Per_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Per_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="alumno_clase_alumno_clase_ibfk_4">
+          <End Role="clase" Type="Self.clase" Multiplicity="1" />
+          <End Role="alumno_clase" Type="Self.alumno_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="alumno_clase">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="clase_clase_ibfk_1">
+          <End Role="periodo" Type="Self.periodo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="periodo">
+              <PropertyRef Name="Per_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Per_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="clase_clase_ibfk_2">
+          <End Role="materia" Type="Self.materia" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="materia">
+              <PropertyRef Name="Mat_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Mat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="clase_clase_ibfk_3">
+          <End Role="docente" Type="Self.docente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="docente">
+              <PropertyRef Name="Doc_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Doc_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="horario_horario_ibfk_1">
+          <End Role="clase" Type="Self.clase" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="horario" Type="Self.horario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="horario">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="horario_horario_ibfk_2">
+          <End Role="dias" Type="Self.dias" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="horario" Type="Self.horario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dias">
+              <PropertyRef Name="Dia_ID" />
+            </Principal>
+            <Dependent Role="horario">
+              <PropertyRef Name="Dia_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="sgaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="acudiente" EntityType="Self.acudiente" />
+          <EntitySet Name="administrador" EntityType="Self.administrador" />
+          <EntitySet Name="alumno" EntityType="Self.alumno" />
+          <EntitySet Name="alumno_clase" EntityType="Self.alumno_clase" />
+          <EntitySet Name="calificaciones" EntityType="Self.calificaciones" />
+          <EntitySet Name="clase" EntityType="Self.clase" />
+          <EntitySet Name="dias" EntityType="Self.dias" />
+          <EntitySet Name="docente" EntityType="Self.docente" />
+          <EntitySet Name="horario" EntityType="Self.horario" />
+          <EntitySet Name="materia" EntityType="Self.materia" />
+          <EntitySet Name="periodo" EntityType="Self.periodo" />
+          <AssociationSet Name="alumno_alumno_ibfk_1" Association="Self.alumno_alumno_ibfk_1">
+            <End Role="acudiente" EntitySet="acudiente" />
+            <End Role="alumno" EntitySet="alumno" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase_alumno_clase_ibfk_2" Association="Self.alumno_clase_alumno_clase_ibfk_2">
+            <End Role="alumno" EntitySet="alumno" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase_alumno_clase_ibfk_1" Association="Self.alumno_clase_alumno_clase_ibfk_1">
+            <End Role="calificaciones" EntitySet="calificaciones" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase_alumno_clase_ibfk_3" Association="Self.alumno_clase_alumno_clase_ibfk_3">
+            <End Role="periodo" EntitySet="periodo" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="alumno_clase_alumno_clase_ibfk_4" Association="Self.alumno_clase_alumno_clase_ibfk_4">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="alumno_clase" EntitySet="alumno_clase" />
+          </AssociationSet>
+          <AssociationSet Name="clase_clase_ibfk_1" Association="Self.clase_clase_ibfk_1">
+            <End Role="periodo" EntitySet="periodo" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="clase_clase_ibfk_2" Association="Self.clase_clase_ibfk_2">
+            <End Role="materia" EntitySet="materia" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="clase_clase_ibfk_3" Association="Self.clase_clase_ibfk_3">
+            <End Role="docente" EntitySet="docente" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="horario_horario_ibfk_1" Association="Self.horario_horario_ibfk_1">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="horario" EntitySet="horario" />
+          </AssociationSet>
+          <AssociationSet Name="horario_horario_ibfk_2" Association="Self.horario_horario_ibfk_2">
+            <End Role="dias" EntitySet="dias" />
+            <End Role="horario" EntitySet="horario" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="sgaModelStoreContainer" CdmEntityContainer="sgaEntities">
+          <EntitySetMapping Name="acudiente">
+            <EntityTypeMapping TypeName="sgaModel.acudiente">
+              <MappingFragment StoreEntitySet="acudiente">
+                <ScalarProperty Name="Acu_ID" ColumnName="Acu_ID" />
+                <ScalarProperty Name="Acu_Doc" ColumnName="Acu_Doc" />
+                <ScalarProperty Name="Acu_Nom" ColumnName="Acu_Nom" />
+                <ScalarProperty Name="Acu_Apel" ColumnName="Acu_Apel" />
+                <ScalarProperty Name="Acu_Tel" ColumnName="Acu_Tel" />
+                <ScalarProperty Name="Acu_Email" ColumnName="Acu_Email" />
+                <ScalarProperty Name="Acu_Passw" ColumnName="Acu_Passw" />
+                <ScalarProperty Name="Acu_FecReg" ColumnName="Acu_FecReg" />
+                <ScalarProperty Name="Acu_Status" ColumnName="Acu_Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="administrador">
+            <EntityTypeMapping TypeName="sgaModel.administrador">
+              <MappingFragment StoreEntitySet="administrador">
+                <ScalarProperty Name="Adm_ID" ColumnName="Adm_ID" />
+                <ScalarProperty Name="Adm_Doc" ColumnName="Adm_Doc" />
+                <ScalarProperty Name="Adm_Nom" ColumnName="Adm_Nom" />
+                <ScalarProperty Name="Adm_Apel" ColumnName="Adm_Apel" />
+                <ScalarProperty Name="Adm_Tel" ColumnName="Adm_Tel" />
+                <ScalarProperty Name="Adm_Email" ColumnName="Adm_Email" />
+                <ScalarProperty Name="Adm_Passw" ColumnName="Adm_Passw" />
+                <ScalarProperty Name="Adm_FecReg" ColumnName="Adm_FecReg" />
+                <ScalarProperty Name="Adm_Status" ColumnName="Adm_Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="alumno">
+            <EntityTypeMapping TypeName="sgaModel.alumno">
+              <MappingFragment StoreEntitySet="alumno">
+                <ScalarProperty Name="Alum_ID" ColumnName="Alum_ID" />
+                <ScalarProperty Name="Alum_Doc" ColumnName="Alum_Doc" />
+                <ScalarProperty Name="Alum_Nom" ColumnName="Alum_Nom" />
+                <ScalarProperty Name="Alum_Apel" ColumnName="Alum_Apel" />
+                <ScalarProperty Name="Alum_Tel" ColumnName="Alum_Tel" />
+                <ScalarProperty Name="Alum_Email" ColumnName="Alum_Email" />
+                <ScalarProperty Name="Alum_Passw" ColumnName="Alum_Passw" />
+                <ScalarProperty Name="Alum_FecReg" ColumnName="Alum_FecReg" />
+                <ScalarProperty Name="Alum_Status" ColumnName="Alum_Status" />
+                <ScalarProperty Name="Acu_ID" ColumnName="Acu_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="alumno_clase">
+            <EntityTypeMapping TypeName="sgaModel.alumno_clase">
+              <MappingFragment StoreEntitySet="alumno_clase">
+                <ScalarProperty Name="Alcl_ID" ColumnName="Alcl_ID" />
+                <ScalarProperty Name="Alum_ID" ColumnName="Alum_ID" />
+                <ScalarProperty Name="Per_ID" ColumnName="Per_ID" />
+                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
+                <ScalarProperty Name="Cal_ID" ColumnName="Cal_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="calificaciones">
+            <EntityTypeMapping TypeName="sgaModel.calificaciones">
+              <MappingFragment StoreEntitySet="calificaciones">
+                <ScalarProperty Name="Cal_ID" ColumnName="Cal_ID" />
+                <ScalarProperty Name="Cal_N1" ColumnName="Cal_N1" />
+                <ScalarProperty Name="Cal_N2" ColumnName="Cal_N2" />
+                <ScalarProperty Name="Cal_N3" ColumnName="Cal_N3" />
+                <ScalarProperty Name="Cal_NF" ColumnName="Cal_NF" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="clase">
+            <EntityTypeMapping TypeName="sgaModel.clase">
+              <MappingFragment StoreEntitySet="clase">
+                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
+                <ScalarProperty Name="Mat_ID" ColumnName="Mat_ID" />
+                <ScalarProperty Name="Doc_ID" ColumnName="Doc_ID" />
+                <ScalarProperty Name="Clas_Capa" ColumnName="Clas_Capa" />
+                <ScalarProperty Name="Per_ID" ColumnName="Per_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dias">
+            <EntityTypeMapping TypeName="sgaModel.dias">
+              <MappingFragment StoreEntitySet="dias">
+                <ScalarProperty Name="Dia_ID" ColumnName="Dia_ID" />
+                <ScalarProperty Name="Dia_Nom" ColumnName="Dia_Nom" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="docente">
+            <EntityTypeMapping TypeName="sgaModel.docente">
+              <MappingFragment StoreEntitySet="docente">
+                <ScalarProperty Name="Doc_ID" ColumnName="Doc_ID" />
+                <ScalarProperty Name="Doc_Doc" ColumnName="Doc_Doc" />
+                <ScalarProperty Name="Doc_Nom" ColumnName="Doc_Nom" />
+                <ScalarProperty Name="Doc_Apel" ColumnName="Doc_Apel" />
+                <ScalarProperty Name="Doc_Tel" ColumnName="Doc_Tel" />
+                <ScalarProperty Name="Doc_Email" ColumnName="Doc_Email" />
+                <ScalarProperty Name="Doc_Passw" ColumnName="Doc_Passw" />
+                <ScalarProperty Name="Doc_FecReg" ColumnName="Doc_FecReg" />
+                <ScalarProperty Name="Doc_Status" ColumnName="Doc_Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="horario">
+            <EntityTypeMapping TypeName="sgaModel.horario">
+              <MappingFragment StoreEntitySet="horario">
+                <ScalarProperty Name="Hor_ID" ColumnName="Hor_ID" />
+                <ScalarProperty Name="Dia_ID" ColumnName="Dia_ID" />
+                <ScalarProperty Name="Hor_Ini" ColumnName="Hor_Ini" />
+                <ScalarProperty Name="Hor_Fin" ColumnName="Hor_Fin" />
+                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="materia">
+            <EntityTypeMapping TypeName="sgaModel.materia">
+              <MappingFragment StoreEntitySet="materia">
+                <ScalarProperty Name="Mat_ID" ColumnName="Mat_ID" />
+                <ScalarProperty Name="Mat_Nom" ColumnName="Mat_Nom" />
+                <ScalarProperty Name="Mat_Desc" ColumnName="Mat_Desc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="periodo">
+            <EntityTypeMapping TypeName="sgaModel.periodo">
+              <MappingFragment StoreEntitySet="periodo">
+                <ScalarProperty Name="Per_ID" ColumnName="Per_ID" />
+                <ScalarProperty Name="Per_Nom" ColumnName="Per_Nom" />
+                <ScalarProperty Name="Per_Ini" ColumnName="Per_Ini" />
+                <ScalarProperty Name="Per_Fin" ColumnName="Per_Fin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
