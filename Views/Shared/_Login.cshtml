@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"
+    <link rel="shortcut icon" href="/img/principal/header.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/img/principal/header.png" />
+    @Styles.Render("~/Scripts/vendor/bootstrap/css/bootstrap.min.css")
+    @Styles.Render("~/fonts/font-awesome-4.7.0/css/font-awesome.min.css")
+    @Styles.Render("~/Scripts/vendor/animate/animate.css")
+    @Styles.Render("~/Scripts/vendor/css-hamburgers/hamburgers.min.css")
+    @Styles.Render("~/Scripts/vendor/select2/select2.min.css")
+    @Styles.Render("~/Scripts/css/login/util.css")
+    @Styles.Render("~/Scripts/css/login/main.css")
+
+</head>
+<body>
+    @RenderBody()
+
+    @Scripts.Render("~/Scripts/vendor/jquery/jquery-3.2.1.min.js")
+    @Scripts.Render("~/Scripts/vendor/bootstrap/js/popper.js")
+    @Scripts.Render("~/Scripts/vendor/bootstrap/js/bootstrap.min.js")
+    @Scripts.Render("~/Scripts/vendor/select2/select2.min.js")
+    @Scripts.Render("~/Scripts/vendor/tilt/tilt.jquery.min.js")
+    <script>
+        $('.js-tilt').tilt({
+            scale: 1.1
+        })
+    </script>
+    @Scripts.Render("~/Scripts/js/login/main.js")
+</body>
+</html>
