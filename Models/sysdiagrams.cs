@@ -12,15 +12,12 @@ namespace ProyectoFinal.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class horario
+    public partial class sysdiagrams
     {
-        public long Hor_ID { get; set; }
-        public long Dia_ID { get; set; }
-        public System.DateTime Hor_Ini { get; set; }
-        public System.DateTime Hor_Fin { get; set; }
-        public long Clas_ID { get; set; }
-    
-        public virtual clase clase { get; set; }
-        public virtual dias dias { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

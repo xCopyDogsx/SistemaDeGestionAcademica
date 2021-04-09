@@ -4,9 +4,10 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="b17082238aa6482c9d7d81bb6cb98149" Name="Diagram1">
+      <Diagram DiagramId="ea4bd6c3e5fd497ebf217bd2701f57df" Name="Diagram1">
+        <EntityTypeShape EntityType="sgaModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="8.875" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.acudiente" Width="1.5" PointX="1.5" PointY="14.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="sgaModel.administrador" Width="1.5" PointX="6" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.administrador" Width="1.5" PointX="7.75" PointY="8.875" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.alumno" Width="1.5" PointX="0.75" PointY="10.125" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.alumno_clase" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.calificaciones" Width="1.5" PointX="0.75" PointY="18.25" IsExpanded="true" />

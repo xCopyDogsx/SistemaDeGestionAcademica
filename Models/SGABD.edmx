@@ -4,7 +4,17 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="acudiente">
           <Key>
             <PropertyRef Name="Acu_ID" />
@@ -12,10 +22,10 @@
           <Property Name="Acu_ID" Type="bigint" Nullable="false" />
           <Property Name="Acu_Doc" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Acu_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Acu_Apel" Type="int" Nullable="false" />
-          <Property Name="Acu_Tel" Type="int" Nullable="false" />
-          <Property Name="Acu_Email" Type="int" Nullable="false" />
-          <Property Name="Acu_Passw" Type="int" Nullable="false" />
+          <Property Name="Acu_Apel" Type="varchar" MaxLength="200" />
+          <Property Name="Acu_Tel" Type="varchar" MaxLength="200" />
+          <Property Name="Acu_Email" Type="varchar" MaxLength="200" />
+          <Property Name="Acu_Passw" Type="varchar" MaxLength="200" />
           <Property Name="Acu_FecReg" Type="date" Nullable="false" />
           <Property Name="Acu_Status" Type="int" Nullable="false" />
         </EntityType>
@@ -265,6 +275,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="sgaModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="acudiente" EntityType="Self.acudiente" Schema="sga" store:Type="Tables" />
           <EntitySet Name="administrador" EntityType="Self.administrador" Schema="sga" store:Type="Tables" />
           <EntitySet Name="alumno" EntityType="Self.alumno" Schema="sga" store:Type="Tables" />
@@ -322,6 +333,16 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="sgaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
         <EntityType Name="acudiente">
           <Key>
             <PropertyRef Name="Acu_ID" />
@@ -329,10 +350,10 @@
           <Property Name="Acu_ID" Type="Int64" Nullable="false" />
           <Property Name="Acu_Doc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Acu_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Acu_Apel" Type="Int32" Nullable="false" />
-          <Property Name="Acu_Tel" Type="Int32" Nullable="false" />
-          <Property Name="Acu_Email" Type="Int32" Nullable="false" />
-          <Property Name="Acu_Passw" Type="Int32" Nullable="false" />
+          <Property Name="Acu_Apel" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Acu_Tel" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Acu_Email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Acu_Passw" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Acu_FecReg" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Acu_Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="alumno" Relationship="Self.alumno_alumno_ibfk_1" FromRole="acudiente" ToRole="alumno" />
@@ -602,6 +623,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="sgaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="acudiente" EntityType="Self.acudiente" />
           <EntitySet Name="administrador" EntityType="Self.administrador" />
           <EntitySet Name="alumno" EntityType="Self.alumno" />
@@ -660,6 +682,17 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="sgaModelStoreContainer" CdmEntityContainer="sgaEntities">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="sgaModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="acudiente">
             <EntityTypeMapping TypeName="sgaModel.acudiente">
               <MappingFragment StoreEntitySet="acudiente">
@@ -808,7 +841,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
       </DesignerInfoPropertySet>
     </Options>

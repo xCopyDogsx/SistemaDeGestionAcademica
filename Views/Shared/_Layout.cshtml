@@ -36,8 +36,14 @@
                     <ul class="navbar-nav">
                         <li><a class="nav-link active">@Html.ActionLink("Inicio", "Index", "Home")</a></li>
                         <li><a class="nav-link">@Html.ActionLink("Acerca de nosotros", "About", "Home")</a></li>
-                        <li><a class="nav-link">@Html.ActionLink("Docentes y estudiantes", "SGA", "Login")</a></li>
-                        <li><a class="nav-link">@Html.ActionLink("Administrativos", "Admin", "Login")</a></li>
+                        @if (Session["User"] == null)
+                        {
+                            <li><a class="nav-link">@Html.ActionLink("Sistema de Gestión Académica", "SGA", "Login")</a></li>
+                        }
+                        else
+                        {
+                           <li><a class="nav-link">@Html.ActionLink("Volver al panel", "Index", "Panel")</a></li>
+                        }
                         <li><a class="nav-link">@Html.ActionLink("Contactenos", "Contact", "Home")</a></li>
                     </ul>
                 </div>
