@@ -52,21 +52,29 @@ namespace ProyectoFinal.Controllers
                     {
                         Session["User"] = oUserStu;
                         Session["Rol"] = "Estudiante";
+                        Session["Nombres"] = oUserStu.Alum_Nom + " " + oUserStu.Alum_Apel;
+                        Session["Correo"] = oUserStu.Alum_Email;
                     }
                     if (oUserAd != null)
                     {
                         Session["User"] = oUserAd;
                         Session["Rol"] = "Administrador";
+                        Session["Nombres"] = oUserAd.Adm_Nom + " " + oUserAd.Adm_Apel;
+                        Session["Correo"] = oUserAd.Adm_Email;
                     }
                     if (oUserFa != null)
                     {
                         Session["User"] = oUserFa;
                         Session["Rol"] = "Acudiente";
+                        Session["Nombres"] = oUserFa.Acu_Nom + " " + oUserFa.Acu_Apel;
+                        Session["Correo"] = oUserFa.Acu_Email;
                     }
                     if (oUserTe != null)
                     {
                         Session["User"] = oUserTe;
                         Session["Rol"] = "Docente";
+                        Session["Nombres"] = oUserTe.Doc_Nom + " " + oUserTe.Doc_Apel;
+                        Session["Correo"] = oUserTe.Doc_Email;
                     }
                 }
                 return RedirectToAction("Index","Panel");
