@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace ProyectoFinal.Controllers
 {
@@ -12,6 +13,13 @@ namespace ProyectoFinal.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+        public void Salir()
+        {
+            FormsAuthentication.SignOut();
+            Session.RemoveAll();
+            Session.Abandon();
+            Response.Redirect("~/Home/");
         }
     }
 }

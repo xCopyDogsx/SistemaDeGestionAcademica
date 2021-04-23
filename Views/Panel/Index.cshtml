@@ -1,31 +1,100 @@
 ﻿
 @{
-    ViewBag.Title = "Dashboard";
+    ViewBag.Title = "Inicio";
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
-@if (Session["User"] != null)
+@if (Session["User"] == null)
 {
-<main class="app-content">
-    <div class="app-title">
-        <div>
-            <h1><i class="fa fa-dashboard"></i> Blank Page</h1>
-            <p>Start a beautiful journey here</p>
-        </div>
-        <ul class="app-breadcrumb breadcrumb">
-            <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="#">Blank Page</a></li>
-        </ul>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="tile">
-                <div class="tile-body">Create a beautiful dashboard</div>
-            </div>
-        </div>
-    </div>
-</main>
+    <script> window.location.href='@Url.Action("Index", "Home")'; </script>
 }
 else
 {
-    <script> window.location.href='@Url.Action("Index", "Home")'; </script>
+    if (Session["Rol"].Equals("Administrador"))
+    {
+        <main class="app-content">
+            <div class="app-title">
+                <div>
+                    <h1><i class="fa fa-dashboard"></i> Bienvenido administrador</h1>
+                    <p>Tu panel administrativo</p>
+                </div>
+                <ul class="app-breadcrumb breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+                    <li class="breadcrumb-item"><a href="@Url.Content("~/Panel/")">Inicio</a></li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">XD</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    }
+    if (Session["Rol"].Equals("Estudiante"))
+    {
+        <main class="app-content">
+            <div class="app-title">
+                <div>
+                    <h1><i class="fa fa-dashboard"></i> Bienvenido estudiante</h1>
+                    <p>Tu panel administrativo</p>
+                </div>
+                <ul class="app-breadcrumb breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+                    <li class="breadcrumb-item"><a href="@Url.Content("~/Panel/")">Inicio</a></li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">XD</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    }
+    if (Session["Rol"].Equals("Acudiente"))
+    {
+        <main class="app-content">
+            <div class="app-title">
+                <div>
+                    <h1><i class="fa fa-dashboard"></i> Bienvenido acudiente</h1>
+                    <p>Tu panel administrativo</p>
+                </div>
+                <ul class="app-breadcrumb breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+                    <li class="breadcrumb-item"><a href="@Url.Content("~/Panel/")">Inicio</a></li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">XD</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    }
+    if (Session["Rol"].Equals("Docente"))
+    {
+        <main class="app-content">
+            <div class="app-title">
+                <div>
+                    <h1><i class="fa fa-dashboard"></i> Bienvenido docente</h1>
+                    <p>Tu panel administrativo</p>
+                </div>
+                <ul class="app-breadcrumb breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+                    <li class="breadcrumb-item"><a href="@Url.Content("~/Panel/")">Inicio</a></li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">XD</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    }
 }

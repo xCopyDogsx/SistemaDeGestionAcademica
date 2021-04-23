@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿
+@if (Session["User"] == null|| Session["Rol"]==null)
+{
+    <script> window.location.href='@Url.Action("Index", "Home")'; </script>
+            }
+            else
+            {
+
+
+            
+<!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
@@ -12,7 +22,7 @@
 <body class="app sidebar-mini">
     <!-- Navbar-->
     <header class="app-header">
-        <a class="app-header__logo" href="index.html">Harrow School</a>
+        <a class="app-header__logo" href="@Url.Content("~/Panel/")">Harrow School</a>
         <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
         <!-- Navbar Right Menu-->
         <ul class="app-nav">
@@ -22,9 +32,8 @@
             <li class="dropdown">
                 <a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
                 <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                    <li><a class="dropdown-item" href="page-user.html"><i class="fa fa-cog fa-lg"></i> Settings</a></li>
-                    <li><a class="dropdown-item" href="page-user.html"><i class="fa fa-user fa-lg"></i> Profile</a></li>
-                    <li><a class="dropdown-item" href="page-login.html"><i class="fa fa-sign-out fa-lg"></i> Logout</a></li>
+                    <li><a class="dropdown-item" href="@Url.Content("~/Panel/Perfil")"><i class="fa fa-user fa-lg"></i> Perfil</a></li>
+                    <li><a class="dropdown-item" href="@Url.Content("~/Panel/Salir")"><i class="fa fa-sign-out fa-lg"></i> Salir</a></li>
                 </ul>
             </li>
         </ul>
@@ -33,9 +42,25 @@
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
         <div class="app-sidebar__user">
-            <img class="app-sidebar__user-avatar" src="" alt="User Image">
+           
+            @if (this.Session["Rol"].Equals("Administrador"))
+            {
+                <img class="app-sidebar__user-avatar" src="~/img/panel/admin.png" style="width:40%;" alt="User Image">
+            }
+            @if (Session["Rol"].Equals("Estudiante"))
+            {
+                <img class="app-sidebar__user-avatar" src="~/img/panel/graduado.png" style="width:40%;" alt="User Image">
+            }
+            @if (Session["Rol"].Equals("Acudiente"))
+            {
+                <img class="app-sidebar__user-avatar" src="~/img/panel/padres.png" style="width:40%;" alt="User Image">
+            }
+            @if (Session["Rol"].Equals("Docente"))
+            {
+                <img class="app-sidebar__user-avatar" src="~/img/panel/profesor.png" style="width:40%;" alt="User Image">
+            }
             <div>
-               
+
                 <p class="app-sidebar__user-name">@Session["Nombres"]</p>
                 <p class="app-sidebar__user-designation">@Session["Rol"]</p>
             </div>
@@ -43,8 +68,20 @@
         <ul class="app-menu">
             @if (Session["Rol"].Equals("Administrador"))
             {
-                <li><a class="app-menu__item active" href="dashboard.html"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
-                <li><a class="app-menu__item" href=""><i class="app-menu__icon fa fa-star"></i><span class="app-menu__label">Ejemplo</span></a></li>
+                <li><a class="app-menu__item active" href="@Url.Content("~/Panel/")"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Inicio</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Estudiantes")"><i class="app-menu__icon fa fa-graduation-cap"></i><span class="app-menu__label">Estudiantes</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Docentes")"><i class="app-menu__icon fa fa-book"></i><span class="app-menu__label">Docentes</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Periodos")"><i class="app-menu__icon fa fa-calendar-check-o"></i><span class="app-menu__label">Periodos academicos</span></a></li>
+                <li class="treeview">
+                    <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-folder-open"></i><span class="app-menu__label">Asignatruras</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a class="treeview-item" href="@Url.Content("~/Admin/Materias")"><i class="icon fa fa-star"></i> Materias</a></li>
+                        <li><a class="treeview-item" href="@Url.Content("~/Admin/Notas")" target="_blank" rel="noopener"><i class="icon fa fa-star"></i> Modificar notas</a></li>
+                    </ul>
+                </li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Admins")"><i class="app-menu__icon fa fa-lock"></i><span class="app-menu__label">Administradores</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Panel/Salir")"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
+
             }
             @if (Session["Rol"].Equals("Estudiante"))
             {
@@ -72,3 +109,4 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+}
