@@ -14,12 +14,12 @@ namespace ProyectoFinal.Controllers
         {
             return View();
         }
-        public void Salir()
+        public ActionResult Salir()
         {
             FormsAuthentication.SignOut();
             Session.RemoveAll();
             Session.Abandon();
-            Response.Redirect("~/Home/");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
