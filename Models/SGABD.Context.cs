@@ -25,7 +25,6 @@ namespace ProyectoFinal.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<acudiente> acudiente { get; set; }
         public virtual DbSet<administrador> administrador { get; set; }
         public virtual DbSet<alumno> alumno { get; set; }

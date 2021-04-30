@@ -293,9 +293,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SGABD.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagrams.cs">
-      <DependentUpon>SGABD.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +316,7 @@
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Views\Error\ErrorPage.cshtml" />
     <EntityDeploy Include="Models\SGABD.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SGABD.Designer.cs</LastGenOutput>
@@ -326,7 +324,6 @@
     <Content Include="Models\SGABD.edmx.diagram">
       <DependentUpon>SGABD.edmx</DependentUpon>
     </Content>
-    <Content Include="Views\Error\ErrorPage.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
