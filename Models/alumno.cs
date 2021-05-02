@@ -30,7 +30,7 @@ namespace ProyectoFinal.Models
         public System.DateTime Alum_FecReg { get; set; }
         public int Alum_Status { get; set; }
         public long Acu_ID { get; set; }
-    
+
         public virtual acudiente acudiente { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<alumno_clase> alumno_clase { get; set; }

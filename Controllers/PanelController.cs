@@ -12,6 +12,7 @@ namespace ProyectoFinal.Controllers
         // GET: Panel
         public ActionResult Index()
         {
+            ViewBag.Activar = "Panel";
             return View();
         }
         public ActionResult Salir()
