@@ -46,8 +46,50 @@ else
             </div>
         </div>
     </main>
-    @section scripts{
-        <script>
+
+    <!---Modal 1-->
+    <div class="modal fade" id="modalEditEst" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #007bff;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Editar estudiante</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tile">
+                        <div class="tile-body">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---Modal 2-->
+                    <div class="modal fade" id="modalDeleteEst" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header headerRegister" style="background: #fc0505;color: #FFF;">
+                                    <h5 class="modal-title" id="titleModal">Acción necesaria</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="tile">
+                                        <div class="tile-body">
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+@section scripts{
+    <script>
             $(document).ready(function () {
                 $('#Estudiantes').DataTable({
                     "language": {
@@ -81,11 +123,7 @@ else
                 });
             });
 
-        </script>
-        @if (ViewBag.Error != null)
-        {
-            <script>
-            swal("Error",@ViewBag.Error, "success");</script>
-        }
-    }
-}
+                        </script>
+                        
+                    }
+                }

@@ -32,10 +32,14 @@ namespace ProyectoFinal.Controllers
                     ViewBag.Description = "La URL que está intentando ingresar no existe";
                     ViewBag.Code = "404";
                     break;
-
+                case 403:
+                    ViewBag.Title = "¡Entraste donde no era!";
+                    ViewBag.Description = "Al link que quieres entrar necesita de los permisos necesarios para continuar.";
+                    ViewBag.Code = "403";
+                    break;
                 default:
-                    ViewBag.Title = "Página no encontrada";
-                    ViewBag.Description = "Error en el servidor :c";
+                    ViewBag.Title = "Error interno";
+                    ViewBag.Description = "Vaya, has encontrado un error en el servidor :c o posiblemente no tienes los permisos necesarios";
                     ViewBag.Code = "500";
                     break;
             }

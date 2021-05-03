@@ -109,6 +109,10 @@
     @Scripts.Render("~/Scripts/js/panel/plugins/pace.min.js")
     @Scripts.Render("~/Scripts/js/panel/jsdataTables.min.js")
     @Scripts.Render("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
+    @if (Session["Rol"].Equals("Administrador"))
+    {
+        @Scripts.Render("~/Scripts/js/panel/functionAdmEst.js")
+    }
     @RenderSection("scripts", required: false)
 </body>
 </html>
