@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.ViewModels;
 using System.Linq.Dynamic;
+using System.Web.Services;
 
 namespace ProyectoFinal.Controllers
 {
@@ -129,8 +130,47 @@ namespace ProyectoFinal.Controllers
                 }
 
             }
-           
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
+        
+        public bool Elim(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.alumno
+                                 where p.Alum_ID == id
+                                 select p).Single();
+                    db.alumno.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }          
+            }
+            return true;
+        } 
+        [HttpPost]
+        public ActionResult EliminarEst(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                         {
+                return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                     }
+                if (Elim(id))
+                {
+                    return Json(new { Success = true, msg = "El estudiante se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }    
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
         }
         public ActionResult Docentes()
         {
