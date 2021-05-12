@@ -16,5 +16,6 @@ namespace ProyectoFinal.Models.ViewModels
         public int Alum_Status { get; set; }
         public string Alum_Status2 { get; set; }
         public string Acciones { get; set; }
+        public long Acu_ID { get; set; }
     }
 }

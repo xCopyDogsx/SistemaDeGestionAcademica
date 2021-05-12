@@ -18,7 +18,8 @@
     <link rel="shortcut icon" href="/img/principal/header.png" />
     @Styles.Render("~/Scripts/css/panel/main.css")
     @Styles.Render("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")
-    @Styles.Render("~/Scripts/css/panel/dataTables.min.css")
+    @Styles.Render("~/Scripts/css/panel/bootstrap-select.min.css")
+    
 </head>
 <body class="app sidebar-mini">
     <!-- Navbar-->
@@ -69,7 +70,7 @@
         <ul class="app-menu">
             @if (Session["Rol"].Equals("Administrador"))
             {
-                <li><a class="app-menu__item active" href="@Url.Content("~/Panel/")"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Inicio</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Panel/")"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Inicio</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Estudiantes")"><i class="app-menu__icon fa fa-graduation-cap"></i><span class="app-menu__label">Estudiantes</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Docentes")"><i class="app-menu__icon fa fa-book"></i><span class="app-menu__label">Docentes</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Periodos")"><i class="app-menu__icon fa fa-calendar-check-o"></i><span class="app-menu__label">Periodos academicos</span></a></li>
@@ -108,8 +109,17 @@
     @Scripts.Render("~/Scripts/js/panel/bootstrap.min.js")
     @Scripts.Render("~/Scripts/js/panel/main.js")
     @Scripts.Render("~/Scripts/js/panel/plugins/pace.min.js")
+    @Scripts.Render("~/Scripts/js/panel/fontawesome.js")
     @Scripts.Render("~/Scripts/js/panel/jsdataTables.min.js")
     @Scripts.Render("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
+    @Scripts.Render("~/Scripts/js/panel/dataTables.bootstrap.min.js")
+    @Scripts.Render("~/Scripts/js/panel/bootstrap-select.min.js")
+    @Scripts.Render("https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js")
+    @Scripts.Render("https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js")
+
     @if (Session["Rol"].Equals("Administrador"))
     {
         @Scripts.Render("~/Scripts/js/panel/functionAdmEst.js")

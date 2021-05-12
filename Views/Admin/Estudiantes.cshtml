@@ -15,10 +15,11 @@ else
             <div>
                 <h1><i class="fa fa-graduation-cap"></i> Estudiantes</h1>
                 <p>Crea,elimina y edita estudiantes</p>
+                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-                <li class="breadcrumb-item"><a href="@Url.Content("~/Estudiantes/")">Estudiantes</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Estudiantes/")">Estudiantes</a></li>
             </ul>
         </div>
         <div class="row">
@@ -26,8 +27,9 @@ else
                 <div class="tile">
                     <div class="tile-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered no-footer dataTable" id="Estudiantes" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                            <table class="table table-hover table-bordered" id="Estudiantes" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
                                 <thead>
+                                <tr>
                                 <th>ID</th>
                                 <th>Documento</th>
                                 <th>Nombres</th>
@@ -36,6 +38,7 @@ else
                                 <th>Email</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
@@ -60,53 +63,59 @@ else
                 <div class="modal-body">
                     <div class="tile">
                         <div class="tile-body">
-                            <form id="formUsuario" name="formUsuario"  method="POST" action="#" class="form-horizontal">
-                                <input type="hidden" id="idUsuario" name="idUsuario" value="">
+                            <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                                <input type="hidden" id="idUsuario2" name="idUsuario2" value="">
                                 <p class="text-primary">Todos los campos son obligatorios.</p>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="txtIdentificacion">Identificación</label>
-                                        <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
+                                        <label for="txtIdentificacion2">Identificación</label>
+                                        <input type="text" class="form-control" id="txtIdentificacion2" name="txtIdentificacion2" required="">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="txtNombre">Nombres</label>
-                                        <input type="text" class="form-control valid validText" id="txtNombre" name="txtNombre" required="">
+                                        <label for="txtNombre2">Nombres</label>
+                                        <input type="text" class="form-control valid validText" id="txtNombre2" name="txtNombre2" required="">
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="txtApellido">Apellidos</label>
-                                        <input type="text" class="form-control valid validText" id="txtApellido" name="txtApellido" required="">
+                                        <label for="txtApellido2">Apellidos</label>
+                                        <input type="text" class="form-control valid validText" id="txtApellido2" name="txtApellido2" required="">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="txtTelefono">Teléfono</label>
-                                        <input type="text" class="form-control valid validNumber" id="txtTelefono" name="txtTelefono" required="" onkeypress="return controlTag(event);">
+                                        <input type="text" class="form-control valid validNumber" id="txtTelefono2" name="txtTelefono2" required="" onkeypress="return controlTag(event);">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="txtEmail">Email</label>
-                                        <input type="email" class="form-control valid validEmail" id="txtEmail" name="txtEmail" required="">
+                                        <input type="email" class="form-control valid validEmail" id="txtEmail2" name="txtEmail2" required="">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="txtPassword">Password</label>
-                                        <input type="password" class="form-control" id="txtPassword" name="txtPassword">
+                                        <label for="txtAcudID">ID acudiente</label>
+                                        <input type="text" class="form-control valid validNumber" id="txtAcudID" name="txtAcudID">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="listStatus">Status</label>
-                                        <select class="form-control selectpicker" id="listStatus" name="listStatus" required>
+                                        <select class="form-control selectpicker" id="listStatus2" name="listStatus2" required>
                                             <option value="1">Activo</option>
                                             <option value="2">Inactivo</option>
                                         </select>
                                     </div>
-                                </div>             
-                                <div class="tile-footer">
-                                    <button id="btnActionForm" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
-                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div> 
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtPassword">Password</label>
+                                        <input type="password" class="form-control" id="txtPassword2" name="txtPassword2">
+                                    </div>
                                 </div>
-                            </form>
+                                    <div class="tile-footer">
+                                        <button id="btnActionForm2" onclick="sendEdit();" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                    </div>
+                                </form>
                         </div>
                     </div>
                 </div>
@@ -114,25 +123,72 @@ else
         </div>
     </div>
     <!---Modal 2-->
-<div class="modal fade" id="modalDeleteEst" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header headerRegister" style="background: #fc0505;color: #FFF;">
-                                    <h5 class="modal-title" id="titleModal">Acción necesaria</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="tile">
-                                        <div class="tile-body">
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+<div class="modal fade" id="modalNewEst" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                <h5 class="modal-title" id="titleModal">Estudiante nuevo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formUsuario" name="formUsuario" class="form-horizontal">           
+                    <p class="text-primary">Todos los campos son obligatorios.</p>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txtIdentificacion">Identificación</label>
+                            <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txtNombre">Nombres</label>
+                            <input type="text" class="form-control valid validText" id="txtNombre" name="txtNombre" required="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="txtApellido">Apellidos</label>
+                            <input type="text" class="form-control valid validText" id="txtApellido" name="txtApellido" required="">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txtTelefono">Teléfono</label>
+                            <input type="text" class="form-control valid validNumber" id="txtTelefono" name="txtTelefono" required="" >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="txtEmail">Email</label>
+                            <input type="email" class="form-control valid validEmail" id="txtEmail" name="txtEmail" required="">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txtIDacu">ID acudiente</label>
+                            <input type="text" class="form-control valid validNumber" id="txtIDacu" name="txtIDacu" required="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="listStatus">Status</label>
+                            <select class="form-control selectpicker" id="listStatus" name="listStatus" required>
+                                <option value="1">Activo</option>
+                                <option value="2">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txtPassword">Password</label>
+                            <input type="password" class="form-control" id="txtPassword" name="txtPassword">
+                        </div>
+                    </div>
+                    <div class="tile-footer">
+                        <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts{
     <script>
@@ -144,7 +200,6 @@ else
                     },
                     "processing": true,
                     "serverSide": true,
-
                     "ajax": {
                         "url": "@Url.Content("~/Admin/JsonEstudiantes")",
                         "type": "POST",
@@ -153,7 +208,6 @@ else
                     "pageLength": 10,
                     "filter": true,
                     "responsivePriority": 1,
-
                     "data": null,
                     "columns": [
                         { "data": "Alum_ID", "name": "Alum_ID", "autoWidth": true },
@@ -166,7 +220,7 @@ else
                         { "data": "Acciones", "name": "Acciones", "autoWidth": true }
                     ],
                     'dom': 'lBfrtip',
-                    'buttons': [
+                   'buttons': [
                         {
                             "extend": "copyHtml5",
                             "text": "<i class='far fa-copy'></i> Copiar",
@@ -175,17 +229,17 @@ else
                         }, {
                             "extend": "excelHtml5",
                             "text": "<i class='fas fa-file-excel'></i> Excel",
-                            "titleAttr": "Esportar a Excel",
+                            "titleAttr": "Exportar a Excel",
                             "className": "btn btn-success"
                         }, {
                             "extend": "pdfHtml5",
                             "text": "<i class='fas fa-file-pdf'></i> PDF",
-                            "titleAttr": "Esportar a PDF",
+                            "titleAttr": "Exportar a PDF",
                             "className": "btn btn-danger"
                         }, {
                             "extend": "csvHtml5",
                             "text": "<i class='fas fa-file-csv'></i> CSV",
-                            "titleAttr": "Esportar a CSV",
+                            "titleAttr": "Exportar a CSV",
                             "className": "btn btn-info"
                         }
                     ],
@@ -193,6 +247,80 @@ else
                     "bDestroy": true
                 });
         });
+/*------------Para el modal N° 1----------------------*/
+            if (document.querySelector("#formUsuario")) {
+                let formUsuario = document.querySelector("#formUsuario");
+                formUsuario.onsubmit = function (e) {
+                    e.preventDefault();
+                    let strIdentificacion = document.querySelector('#txtIdentificacion').value;
+                    let strNombre = document.querySelector('#txtNombre').value;
+                    let strApellido = document.querySelector('#txtApellido').value;
+                    let strEmail = document.querySelector('#txtEmail').value;
+                    let Telefono = document.querySelector('#txtTelefono').value;
+                    let AcuId = document.querySelector('#txtIDacu').value;
+                    let strPassword = document.querySelector('#txtPassword').value;
+                    let Status = document.querySelector('#listStatus').value;
+                    let StatusRedy = 0;
+
+                    if (strIdentificacion == '' || strApellido == '' || strNombre == '' || strEmail == '' || Telefono == '' || AcuId == '') {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+                    if (Status == 1) {
+                        StatusRedy = 1;
+                    }
+                    AcuId = parseInt(AcuId);
+                    var data = { strIdentificacion: strIdentificacion, strNombre: strNombre, strApellido: strApellido, strEmail: strEmail, Telefono: Telefono, AcuId: AcuId, strPassword: strPassword, StatusRedy: StatusRedy };
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("InsertEst", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewEst').modal("hide");
+                                    formUsuario.reset();
+                                    tableEstudiantes.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewEst').modal("hide");
+                                    formUsuario.reset();
+                                    tableEstudiantes.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalNewEst').modal("hide");
+                                formUsuario.reset();
+                                tableEstudiantes.ajax.reload();
+                            }
+                        });
+                       }
+                        return false;
+            }      
         }, false);
         function fntDelEst(id) {
             id = parseInt(id);
@@ -236,7 +364,7 @@ else
                                     title: "Error al procesar la petición",
                                     text: "Por favor comunique a un administrador en caso de que el error persista.",
                                 });
-                                
+
                             }
                         });
                     } else {
@@ -245,6 +373,116 @@ else
                         });
                     }
                 });
+        }
+        function fntEditEst(id) {
+            var data = { id: id };
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelEst","Admin")",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: data,
+                success: function (d) {
+                    var msg = d.msg;
+                    if (d.Success == true) {
+                        document.querySelector("#idUsuario2").value = d.idpersona;
+                        document.querySelector("#txtIdentificacion2").value = d.identificacion;
+                        document.querySelector("#txtNombre2").value = d.nombres;
+                        document.querySelector("#txtApellido2").value = d.apellidos;
+                        document.querySelector("#txtTelefono2").value = d.telefono;
+                        document.querySelector("#txtEmail2").value = d.email_user;
+                        document.querySelector("#txtAcudID").value = d.acu_id;
+                    } else {
+                        swal("Error", {
+                            icon: "error",
+                            title: "Error al procesar la petición",
+                            text: msg,
+                        });
+                        tableEstudiantes.ajax.reload();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    swal("Error", {
+                        icon: "error",
+                        title: "Error al procesar la petición",
+                        text: "Por favor comunique a un administrador en caso de que el error persista.",
+                    });
+
+                }
+            });
+            $('#modalEditEst').modal('show');
+        }
+ /*------------Para el modal N° 2----------------------*/
+        function sendEdit() {
+                    let id = document.querySelector('#idUsuario2').value;
+                    id = parseInt(id);
+                    let strIdentificacion = document.querySelector('#txtIdentificacion2').value;
+                    let strNombre = document.querySelector('#txtNombre2').value;
+                    let strApellido = document.querySelector('#txtApellido2').value;
+                    let strEmail = document.querySelector('#txtEmail2').value;
+                    let Telefono = document.querySelector('#txtTelefono2').value;
+                    let AcuId = document.querySelector('#txtAcudID').value;
+                    let strPassword = document.querySelector('#txtPassword2').value;
+                    let Status = document.querySelector('#listStatus2').value;
+                    let StatusRedy = 0;
+                    if (id == null) {
+                        swal("Atención", "Error interno con el ID.", "error");
+                        return false;
+                    }
+                    if (strIdentificacion == '' || strApellido == '' || strNombre == '' || strEmail == '' || Telefono == '' || AcuId == '') {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+                    if (Status == 1) {
+                        StatusRedy = 1;
+                    }
+                    AcuId = parseInt(AcuId);
+                    var datax = { id:id,strIdentificacion: strIdentificacion, strNombre: strNombre, strApellido: strApellido, strEmail: strEmail, Telefono: Telefono, AcuId: AcuId, strPassword: strPassword, StatusRedy: StatusRedy };
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EditEst", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: datax,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEditEst').modal("hide");
+                                    formUsuario2.reset();
+                                    tableEstudiantes.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });        
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                            }
+                        });
+            return false;
+        }
+        function openModal() {
+            $('#modalNewEst').modal('show');
         }
     </script>
                         
