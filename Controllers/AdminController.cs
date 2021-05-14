@@ -40,6 +40,7 @@ namespace ProyectoFinal.Controllers
             }
         }
  /*---------Administración estudiantes----------------*/
+
         public ActionResult Estudiantes()
         { 
             if (Session["User"] == null)
@@ -279,8 +280,7 @@ namespace ProyectoFinal.Controllers
                     }
                     try
                     {
-                        var std = db.alumno.First<alumno>();
-                        
+                        var std = db.alumno.FirstOrDefault(edit=>edit.Alum_ID==id);
                         std.Alum_Doc = strIdentificacion;
                         std.Alum_Nom = strNombre;
                         std.Alum_Apel = strApellido;
@@ -304,10 +304,7 @@ namespace ProyectoFinal.Controllers
                 return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
             }
         }
-
-
-
-
+        
 
 
         /*---------Administración docentes----------------*/
@@ -329,6 +326,279 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
+        [HttpPost]
+        public ActionResult JsonDocentes()
+        {
+            List<TableAdminDocentesVM> lst = new List<TableAdminDocentesVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminDocentesVM> query = (from Est in db.docente
+                                                             select new TableAdminDocentesVM
+                                                             {
+                                                                 Doc_ID = Est.Doc_ID,
+                                                                 Doc_Doc = Est.Doc_Doc,
+                                                                 Doc_Nom = Est.Doc_Nom,
+                                                                 Doc_Apel = Est.Doc_Apel,
+                                                                 Doc_Tel = Est.Doc_Tel,
+                                                                 Doc_Email = Est.Doc_Email,
+                                                                 Doc_Status = Est.Doc_Status
+                                                             });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Doc_Doc.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Doc_Status2") && !sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminDocentesVM buscador in lst)
+                {
+                    if (buscador.Doc_Status == 1)
+                    {
+                        buscador.Doc_Status2 = "<span class=\"badge badge-success\">Activo</span>";
+                    }
+                    else
+                    {
+                        buscador.Doc_Status2 = "<span class=\"badge badge-danger\">Inactivo</span>";
+                    }
+                    buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditDoc(" + buscador.Doc_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-info btn-sm \" onclick=\"fntVerDoc(" + buscador.Doc_ID + ")\" title=\"Ver docente\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelDoc(" + buscador.Doc_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                }
+
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
+        public bool ElimD(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.docente
+                                 where p.Doc_ID == id
+                                 select p).Single();
+                    db.docente.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult EliminarDoc(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimD(id))
+                {
+                    return Json(new { Success = true, msg = "El docente se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        [HttpPost]
+        public ActionResult InsertDoc(string strIdentificacion, string strNombre, string strApellido, string strEmail, string Telefono, string strPassword, int StatusRedy)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidEm = (from d in db.alumno
+                                    where d.Alum_Email == strEmail
+                                    select d).FirstOrDefault();
+                    var oValidEm2 = (from d in db.acudiente
+                                     where d.Acu_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm3 = (from d in db.docente
+                                     where d.Doc_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm4 = (from d in db.administrador
+                                     where d.Adm_Email == strEmail
+                                     select d).FirstOrDefault();
+                    if (oValidEm != null || oValidEm2 != null || oValidEm3 != null || oValidEm4 != null)
+                    {
+                        return Json(new { Success = false, msg = "El correo electronico ya existe en nuestra base de datos." });
+                    }
+                    try
+                    {
+                        docente estu = new docente();
+                        estu.Doc_Doc = strIdentificacion;
+                        estu.Doc_Nom = strNombre;
+                        estu.Doc_Apel = strApellido;
+                        estu.Doc_Tel = Telefono;
+                        estu.Doc_Email = strEmail;
+                        estu.Doc_Status = StatusRedy;
+                        strPassword = help.GetSHA256(strPassword);
+                        estu.Doc_Passw = strPassword;
+                        db.docente.Add(estu);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Docente almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult SelDoc(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.docente
+                                    where d.Doc_ID == id
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Doc_ID,
+                        identificacion = oValidAl.Doc_Doc,
+                        nombres = oValidAl.Doc_Nom,
+                        apellidos = oValidAl.Doc_Apel,
+                        telefono = oValidAl.Doc_Tel,
+                        email_user = oValidAl.Doc_Email
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditDoc(int id, string strIdentificacion, string strNombre, string strApellido, string strEmail, string Telefono, string strPassword, int StatusRedy)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                   
+                    var oValidEm2 = (from d in db.acudiente
+                                     where d.Acu_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm3 = (from d in db.alumno
+                                     where d.Alum_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm4 = (from d in db.administrador
+                                     where d.Adm_Email == strEmail
+                                     select d).FirstOrDefault();
+                    if (oValidEm2 != null || oValidEm3 != null || oValidEm4 != null)
+                    {
+                        return Json(new { Success = false, msg = "El correo electronico ya existe en nuestra base de datos." });
+                    }
+                    
+                    try
+                    {
+                        var std = db.docente.FirstOrDefault(edit => edit.Doc_ID == id);
+                        std.Doc_Doc = strIdentificacion;
+                        std.Doc_Nom = strNombre;
+                        std.Doc_Apel = strApellido;
+                        std.Doc_Tel = Telefono;
+                        std.Doc_Email = strEmail;
+                        std.Doc_Status = StatusRedy;
+                        strPassword = help.GetSHA256(strPassword);
+                        std.Doc_Passw = strPassword;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Docente actualizado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult SelDocWhitAs(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.docente
+                                    where d.Doc_ID == id
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Doc_Doc,
+                        nombres = oValidAl.Doc_Nom,
+                        apellidos = oValidAl.Doc_Apel
+                       
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+
+
+
+
+
+
+
+
         public ActionResult Periodos()
         {
             if (Session["User"] == null)

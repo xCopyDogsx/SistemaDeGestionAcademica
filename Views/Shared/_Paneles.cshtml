@@ -72,33 +72,36 @@
             {
                 <li><a class="app-menu__item" href="@Url.Content("~/Panel/")"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Inicio</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Estudiantes")"><i class="app-menu__icon fa fa-graduation-cap"></i><span class="app-menu__label">Estudiantes</span></a></li>
-                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Docentes")"><i class="app-menu__icon fa fa-book"></i><span class="app-menu__label">Docentes</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Docentes")"><i class="app-menu__icon fas fa-chalkboard-teacher"></i><span class="app-menu__label">Docentes</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Acudientes")"><i class="app-menu__icon fas fa-house-user"></i><span class="app-menu__label">Acudientes</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Admins")"><i class="app-menu__icon fa fa-lock"></i><span class="app-menu__label">Administradores</span></a></li>
+                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Clases")"><i class="app-menu__icon fas fa-school"></i><span class="app-menu__label">Clases</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Periodos")"><i class="app-menu__icon fa fa-calendar-check-o"></i><span class="app-menu__label">Periodos academicos</span></a></li>
                 <li class="treeview">
-                    <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-folder-open"></i><span class="app-menu__label">Asignatruras</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+                    <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-folder-open"></i><span class="app-menu__label">Asignaturas</span><i class="treeview-indicator fa fa-angle-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a class="treeview-item" href="@Url.Content("~/Admin/Materias")"><i class="icon fa fa-star"></i> Materias</a></li>
                         <li><a class="treeview-item" href="@Url.Content("~/Admin/Notas")" target="_blank" rel="noopener"><i class="icon fa fa-star"></i> Modificar notas</a></li>
                     </ul>
                 </li>
-                <li><a class="app-menu__item" href="@Url.Content("~/Admin/Admins")"><i class="app-menu__icon fa fa-lock"></i><span class="app-menu__label">Administradores</span></a></li>
+
                 <li><a class="app-menu__item" href="@Url.Content("~/Panel/Salir")"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
 
             }
             @if (Session["Rol"].Equals("Estudiante"))
             {
 
-
+                <li><a class="app-menu__item" href="@Url.Content("~/Panel/Salir")"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
             }
             @if (Session["Rol"].Equals("Acudiente"))
             {
 
-
+                <li><a class="app-menu__item" href="@Url.Content("~/Panel/Salir")"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
             }
             @if (Session["Rol"].Equals("Docente"))
             {
 
-
+                <li><a class="app-menu__item" href="@Url.Content("~/Panel/Salir")"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
             }
         </ul>
     </aside>

@@ -299,6 +299,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SGABD.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\TableAdminDocentesVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminEstudiantesVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
