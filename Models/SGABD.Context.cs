@@ -25,6 +25,7 @@ namespace ProyectoFinal.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<acudiente> acudiente { get; set; }
         public virtual DbSet<administrador> administrador { get; set; }
         public virtual DbSet<alumno> alumno { get; set; }
@@ -36,5 +37,6 @@ namespace ProyectoFinal.Models
         public virtual DbSet<horario> horario { get; set; }
         public virtual DbSet<materia> materia { get; set; }
         public virtual DbSet<periodo> periodo { get; set; }
+        public virtual DbSet<curso> curso { get; set; }
     }
 }

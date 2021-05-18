@@ -200,7 +200,11 @@ else
                                 <td>Cursos:</td>
                                 <td id="celCursos"></td>
                             </tr>
-                            
+                            <tr>
+                                <td>Materias:</td>
+                                <td id="celMaterias"></td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -514,6 +518,9 @@ else
                     if (d.Success == true) {
                         document.querySelector("#celDoc").innerHTML = d.idpersona;
                         document.querySelector("#celNombre").innerHTML = d.nombres + " " + d.apellidos;
+                        document.querySelector("#celCursos").innerHTML = d.cursos; 
+                        document.querySelector("#celMaterias").innerHTML = d.materias;
+                        $('#modalViewDocente').modal('show');
                     } else {
                         swal("Error", {
                             icon: "error",
@@ -532,7 +539,7 @@ else
 
                 }
             });
-            $('#modalViewDocente').modal('show');
+           
             }
 
 

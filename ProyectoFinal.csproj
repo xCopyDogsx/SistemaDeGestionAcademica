@@ -266,6 +266,9 @@
     <Compile Include="Models\clase.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\curso.cs">
+      <DependentUpon>SGABD.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\dias.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
@@ -297,6 +300,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SGABD.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>SGABD.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ViewModels\TableAdminDocentesVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminEstudiantesVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -310,6 +316,22 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <EntityDeploy Include="Models\SGABD.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SGABD.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\SGABD.edmx.diagram">
+      <DependentUpon>SGABD.edmx</DependentUpon>
+    </Content>
+    <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Models\SGABD.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SGABD.edmx</DependentUpon>
@@ -320,15 +342,6 @@
       <DependentUpon>SGABD.edmx</DependentUpon>
       <LastGenOutput>SGABD.cs</LastGenOutput>
     </Content>
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap-theme.css.map" />
-    <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -342,13 +355,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="System.Linq.Dynamic.dll" />
     <Content Include="Views\Error\ErrorPage.cshtml" />
-    <EntityDeploy Include="Models\SGABD.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SGABD.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\SGABD.edmx.diagram">
-      <DependentUpon>SGABD.edmx</DependentUpon>
-    </Content>
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

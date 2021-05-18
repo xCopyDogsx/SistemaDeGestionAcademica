@@ -571,18 +571,36 @@ namespace ProyectoFinal.Controllers
                     var oValidAl = (from d in db.docente
                                     where d.Doc_ID == id
                                     select d).FirstOrDefault();
+                    var materias = (from mat in db.materia
+                                  join clas in db.clase on mat.Mat_ID equals clas.Mat_ID
+                                  join doc in db.docente on clas.Doc_ID equals doc.Doc_ID
+                                  where doc.Doc_ID == id
+                                  select mat.Mat_Nom).ToList();
+                    var cursos = (from curs in db.curso
+                                  join clas in db.clase on curs.Curs_ID equals clas.Curs_ID
+                                  join doc in db.docente on clas.Doc_ID equals doc.Doc_ID
+                                  where doc.Doc_ID == id
+                                  select curs.Curs_Nom).ToList();
                     if (oValidAl == null)
                     {
                         return Json(new { Success = false, msg = "Error al precargar datos." });
                     }
-
+                    if (materias == null || materias.Count()==0)
+                    {
+                        return Json(new { Success = false, msg = "El docente no tiene materias asignadas para impartir, por favor asigne el docente a una clase y a una materia." });
+                    }
+                    if (cursos == null || cursos.Count() == 0)
+                    {
+                        return Json(new { Success = false, msg = "El docente no tiene materias asignadas para impartir, por favor asigne el docente a una clase y a una materia." });
+                    }
                     return Json(new
                     {
                         Success = true,
                         idpersona = oValidAl.Doc_Doc,
                         nombres = oValidAl.Doc_Nom,
-                        apellidos = oValidAl.Doc_Apel
-                       
+                        apellidos = oValidAl.Doc_Apel,
+                        cursos=cursos,
+                        materias = materias
                     });
                 }
             }

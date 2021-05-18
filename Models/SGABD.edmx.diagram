@@ -4,13 +4,14 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f07094395a194cce96b401ea41b14723" Name="Diagram1">
-        <EntityTypeShape EntityType="sgaModel.acudiente" Width="1.5" PointX="1.5" PointY="14.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="sgaModel.administrador" Width="1.5" PointX="5.75" PointY="8.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="sgaModel.alumno" Width="1.5" PointX="0.75" PointY="10.125" IsExpanded="true" />
+      <Diagram DiagramId="ff9536f3b5334e8190db2f5f0826a597" Name="Diagram1">
+        <EntityTypeShape EntityType="sgaModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.acudiente" Width="1.5" PointX="1.5" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.administrador" Width="1.5" PointX="7.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.alumno" Width="1.5" PointX="0.75" PointY="10.375" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.alumno_clase" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="sgaModel.calificaciones" Width="1.5" PointX="0.75" PointY="18.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="sgaModel.clase" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.calificaciones" Width="1.5" PointX="0.75" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="sgaModel.clase" Width="1.5" PointX="6" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.dias" Width="1.5" PointX="6" PointY="1.75" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.docente" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="sgaModel.horario" Width="1.5" PointX="8.25" PointY="5.25" IsExpanded="true" />
@@ -26,6 +27,8 @@
         <AssociationConnector Association="sgaModel.clase_clase_ibfk_3" ManuallyRouted="false" />
         <AssociationConnector Association="sgaModel.horario_horario_ibfk_1" ManuallyRouted="false" />
         <AssociationConnector Association="sgaModel.horario_horario_ibfk_2" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="sgaModel.curso" Width="1.5" PointX="9.875" PointY="7.875" />
+        <AssociationConnector Association="sgaModel.FK_clase_curso" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
