@@ -32,11 +32,11 @@ namespace ProyectoFinal.Models
         public virtual DbSet<alumno_clase> alumno_clase { get; set; }
         public virtual DbSet<calificaciones> calificaciones { get; set; }
         public virtual DbSet<clase> clase { get; set; }
+        public virtual DbSet<curso> curso { get; set; }
         public virtual DbSet<dias> dias { get; set; }
         public virtual DbSet<docente> docente { get; set; }
         public virtual DbSet<horario> horario { get; set; }
         public virtual DbSet<materia> materia { get; set; }
         public virtual DbSet<periodo> periodo { get; set; }
-        public virtual DbSet<curso> curso { get; set; }
     }
 }

@@ -384,7 +384,7 @@ namespace ProyectoFinal.Controllers
                         buscador.Doc_Status2 = "<span class=\"badge badge-danger\">Inactivo</span>";
                     }
                     buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditDoc(" + buscador.Doc_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
-                    buscador.Acciones += "<button class=\"btn btn-info btn-sm \" onclick=\"fntVerDoc(" + buscador.Doc_ID + ")\" title=\"Ver docente\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-info btn-sm \" onclick=\"fntVerDoc(" + buscador.Doc_ID + ")\" title=\"Ver estudiante a cargo\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
                     buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelDoc(" + buscador.Doc_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
                 }
 
@@ -610,10 +610,591 @@ namespace ProyectoFinal.Controllers
             }
         }
 
+        /*-----------Administración de acudientes------------- */
+        public ActionResult Acudientes()
+        {
+            if (Session["User"] == null)
+            {
+                HomeController home = new HomeController();
+                return home.Index();
+            }
+            else if (Session["Rol"].Equals("Adminstrador"))
+            {
+                ViewBag.Activar = "Periodos";
+                return View();
+            }
+            else
+            {
+                HomeController home = new HomeController();
+                return home.Index();
+            }
+        }
+        [HttpPost]
+        public ActionResult JsonAcudientes()
+        {
+            List<TableAdminAcudientesVM> lst = new List<TableAdminAcudientesVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminAcudientesVM> query = (from Est in db.acudiente
+                                                          select new TableAdminAcudientesVM
+                                                          {
+                                                              Acu_ID = Est.Acu_ID,
+                                                              Acu_Doc = Est.Acu_Doc,
+                                                              Acu_Nom = Est.Acu_Nom,
+                                                              Acu_Apel = Est.Acu_Apel,
+                                                              Acu_Tel = Est.Acu_Tel,
+                                                              Acu_Email = Est.Acu_Email,
+                                                              Acu_Status = Est.Acu_Status
+                                                          });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Acu_Doc.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Acu_Status2") && !sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminAcudientesVM buscador in lst)
+                {
+                    if (buscador.Acu_Status == 1)
+                    {
+                        buscador.Acu_Status2 = "<span class=\"badge badge-success\">Activo</span>";
+                    }
+                    else
+                    {
+                        buscador.Acu_Status2 = "<span class=\"badge badge-danger\">Inactivo</span>";
+                    }
+                    buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditAcu(" + buscador.Acu_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-info btn-sm \" onclick=\"fntVerAcu(" + buscador.Acu_ID + ")\" title=\"Ver docente\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelAcu(" + buscador.Acu_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                }
+
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
+        public bool ElimA(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.acudiente
+                                 where p.Acu_ID == id
+                                 select p).Single();
+                    db.acudiente.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult EliminarAcu(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimA(id))
+                {
+                    return Json(new { Success = true, msg = "El acudiente se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        [HttpPost]
+        public ActionResult InsertAcu(string strIdentificacion, string strNombre, string strApellido, string strEmail, string Telefono, string strPassword, int StatusRedy)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    int contador = (from d in db.acudiente
+                                    select d.Acu_ID
+                                    ).Count();
+                    var oValidEm = (from d in db.alumno
+                                    where d.Alum_Email == strEmail
+                                    select d).FirstOrDefault();
+                    var oValidEm2 = (from d in db.acudiente
+                                    where d.Acu_Email == strEmail
+                                    select d).FirstOrDefault();
+                    var oValidEm3 = (from d in db.docente
+                                     where d.Doc_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm4 = (from d in db.administrador
+                                     where d.Adm_Email == strEmail
+                                     select d).FirstOrDefault();
+                    if (oValidEm != null ||  oValidEm3 != null || oValidEm4 != null)
+                    {
+                        return Json(new { Success = false, msg = "El correo electronico ya existe en nuestra base de datos." });
+                    }
+                    try
+                    {
+                        acudiente estu = new acudiente();
+                        estu.Acu_ID = contador + 1;
+                        estu.Acu_Doc = strIdentificacion;
+                        estu.Acu_Nom = strNombre;
+                        estu.Acu_Apel = strApellido;
+                        estu.Acu_Tel = Telefono;
+                        estu.Acu_Email = strEmail;
+                        estu.Acu_Status = StatusRedy;
+                        strPassword = help.GetSHA256(strPassword);
+                        estu.Acu_Passw = strPassword;
+                        db.acudiente.Add(estu);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        e.InnerException.ToString();
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Acudiente almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult SelAcu(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.acudiente
+                                    where d.Acu_ID == id
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Acu_ID,
+                        identificacion = oValidAl.Acu_Doc,
+                        nombres = oValidAl.Acu_Nom,
+                        apellidos = oValidAl.Acu_Apel,
+                        telefono = oValidAl.Acu_Tel,
+                        email_user = oValidAl.Acu_Email
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditAcu(int id, string strIdentificacion, string strNombre, string strApellido, string strEmail, string Telefono, string strPassword, int StatusRedy)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidEm2 = (from d in db.docente
+                                     where d.Doc_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm3 = (from d in db.alumno
+                                     where d.Alum_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm4 = (from d in db.administrador
+                                     where d.Adm_Email == strEmail
+                                     select d).FirstOrDefault();
+                    if (oValidEm2 != null || oValidEm3 != null || oValidEm4 != null)
+                    {
+                        return Json(new { Success = false, msg = "El correo electronico ya existe en nuestra base de datos." });
+                    }
+
+                    try
+                    {
+                        var std = db.acudiente.FirstOrDefault(edit => edit.Acu_ID == id);
+                        std.Acu_Doc = strIdentificacion;
+                        std.Acu_Nom = strNombre;
+                        std.Acu_Apel = strApellido;
+                        std.Acu_Tel = Telefono;
+                        std.Acu_Email = strEmail;
+                        std.Acu_Status = StatusRedy;
+                        strPassword = help.GetSHA256(strPassword);
+                        std.Acu_Passw = strPassword;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Acudiente actualizado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult SelAcuWhitAs(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.alumno
+                                    join acu in db.acudiente on d.Acu_ID equals acu.Acu_ID
+                                    where acu.Acu_ID == id
+                                    select d.Alum_Nom).FirstOrDefault();
+                    var oValidAl2 = (from d in db.alumno
+                                    join acu in db.acudiente on d.Acu_ID equals acu.Acu_ID
+                                    where acu.Acu_ID == id
+                                    select d.Alum_Apel).FirstOrDefault();
+                    var identi = (from d in db.alumno
+                                  join acu in db.acudiente on d.Acu_ID equals acu.Acu_ID
+                                  where acu.Acu_ID == id
+                                  select d.Alum_Doc).FirstOrDefault();
+                    if (oValidAl == null|| oValidAl2==null || identi==null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos, por favor revise si este acudiente tiene un alumno asignado." });
+                    }
+                    
+                    return Json(new
+                    {
+                        Success = true,
+                        nombres = oValidAl+" "+oValidAl2,
+                        documento = identi
+  
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
 
 
+        /*------Administración de los superUsuarios (Admins) ------*/
+
+        public ActionResult Admins()
+        {
+            if (Session["User"] == null)
+            {
+                HomeController home = new HomeController();
+                return home.Index();
+            }
+            else if (Session["Rol"].Equals("Adminstrador"))
+            {
+                ViewBag.Activar = "Periodos";
+                return View();
+            }
+            else
+            {
+                HomeController home = new HomeController();
+                return home.Index();
+            }
+        }
+        public long RetornaID()
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+            {
+                    string correo = Session["correo"].ToString();
+                    var oValidAl = (from d in db.administrador
+                                    where d.Adm_Email == correo
+                                    select d.Adm_ID).FirstOrDefault();
+                    if (oValidAl != null)
+                    {
+                        return oValidAl;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        [HttpPost]
+        public ActionResult JsonAdministradores()
+        {
+            List<TableAdminAdministradoresVM> lst = new List<TableAdminAdministradoresVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminAdministradoresVM> query = (from Est in db.administrador
+                                                            select new TableAdminAdministradoresVM
+                                                            {
+                                                                Adm_ID = Est.Adm_ID,
+                                                                Adm_Doc = Est.Adm_Doc,
+                                                                Adm_Nom = Est.Adm_Nom,
+                                                                Adm_Apel = Est.Adm_Apel,
+                                                                Adm_Tel = Est.Adm_Tel,
+                                                                Adm_Email = Est.Adm_Email,
+                                                                Adm_Status = Est.Adm_Status
+                                                            });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Adm_Doc.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Adm_Status2") && !sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminAdministradoresVM buscador in lst)
+                {
+                    if (buscador.Adm_Status == 1)
+                    {
+                        buscador.Adm_Status2 = "<span class=\"badge badge-success\">Activo</span>";
+                    }
+                    else
+                    {
+                        buscador.Adm_Status2 = "<span class=\"badge badge-danger\">Inactivo</span>";
+                    }
+                    long idi = RetornaID();
+                    if (idi == buscador.Adm_ID)
+                    {
+                        buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" disabled=\"disabled\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                        buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" disabled=\"disabled\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                    }else{
+                        buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditAdm(" + buscador.Adm_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                        buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelAdm(" + buscador.Adm_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                   } 
+                }
+
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
 
 
+        public bool ElimAd(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.administrador
+                                 where p.Adm_ID == id
+                                 select p).Single();
+                    db.administrador.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult EliminarAdm(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimAd(id))
+                {
+                    return Json(new { Success = true, msg = "El administrador se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        [HttpPost]
+        public ActionResult InsertAdm(string strIdentificacion, string strNombre, string strApellido, string strEmail, string Telefono, string strPassword, int StatusRedy)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    var oValidEm = (from d in db.alumno
+                                    where d.Alum_Email == strEmail
+                                    select d).FirstOrDefault();
+                    var oValidEm2 = (from d in db.acudiente
+                                     where d.Acu_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm3 = (from d in db.docente
+                                     where d.Doc_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm4 = (from d in db.administrador
+                                     where d.Adm_Email == strEmail
+                                     select d).FirstOrDefault();
+                    if (oValidEm != null || oValidEm3 != null || oValidEm4 != null)
+                    {
+                        return Json(new { Success = false, msg = "El correo electronico ya existe en nuestra base de datos." });
+                    }
+                    try
+                    {
+                        administrador estu = new administrador();
+                        estu.Adm_Doc = strIdentificacion;
+                        estu.Adm_Nom = strNombre;
+                        estu.Adm_Apel = strApellido;
+                        estu.Adm_Tel = Telefono;
+                        estu.Adm_Email = strEmail;
+                        estu.Adm_Status = StatusRedy;
+                        strPassword = help.GetSHA256(strPassword);
+                        estu.Adm_Passw = strPassword;
+                        db.administrador.Add(estu);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        e.InnerException.ToString();
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Acudiente almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult SelAdm(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.administrador
+                                    where d.Adm_ID == id
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Adm_ID,
+                        identificacion = oValidAl.Adm_Doc,
+                        nombres = oValidAl.Adm_Nom,
+                        apellidos = oValidAl.Adm_Apel,
+                        telefono = oValidAl.Adm_Tel,
+                        email_user = oValidAl.Adm_Email
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditAdm(int id, string strIdentificacion, string strNombre, string strApellido, string strEmail, string Telefono, string strPassword, int StatusRedy)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidEm2 = (from d in db.docente
+                                     where d.Doc_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm3 = (from d in db.alumno
+                                     where d.Alum_Email == strEmail
+                                     select d).FirstOrDefault();
+                    var oValidEm4 = (from d in db.acudiente
+                                     where d.Acu_Email == strEmail
+                                     select d).FirstOrDefault();
+                    if (oValidEm2 != null || oValidEm3 != null || oValidEm4 != null)
+                    {
+                        return Json(new { Success = false, msg = "El correo electronico ya existe en nuestra base de datos." });
+                    }
+
+                    try
+                    {
+                        var std = db.administrador.FirstOrDefault(edit => edit.Adm_ID == id);
+                        std.Adm_Doc = strIdentificacion;
+                        std.Adm_Nom = strNombre;
+                        std.Adm_Apel = strApellido;
+                        std.Adm_Tel = Telefono;
+                        std.Adm_Email = strEmail;
+                        std.Adm_Status = StatusRedy;
+                        strPassword = help.GetSHA256(strPassword);
+                        std.Adm_Passw = strPassword;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Administrador actualizado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
 
 
 
@@ -645,24 +1226,6 @@ namespace ProyectoFinal.Controllers
             else if (Session["Rol"].Equals("Adminstrador"))
             {
                 ViewBag.Activar = "Materias";
-                return View();
-            }
-            else
-            {
-                HomeController home = new HomeController();
-                return home.Index();
-            }
-        }
-        public ActionResult Admins()
-        {
-            if (Session["User"] == null)
-            {
-                HomeController home = new HomeController();
-                return home.Index();
-            }
-            else if (Session["Rol"].Equals("Adminstrador"))
-            {
-                ViewBag.Activar = "Admins";
                 return View();
             }
             else

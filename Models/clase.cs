@@ -25,16 +25,16 @@ namespace ProyectoFinal.Models
         public long Mat_ID { get; set; }
         public long Doc_ID { get; set; }
         public int Clas_Capa { get; set; }
-        public long Per_ID { get; set; }
         public long Curs_ID { get; set; }
+        public long Per_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<alumno_clase> alumno_clase { get; set; }
         public virtual periodo periodo { get; set; }
         public virtual materia materia { get; set; }
         public virtual docente docente { get; set; }
+        public virtual curso curso { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<horario> horario { get; set; }
-        public virtual curso curso { get; set; }
     }
 }

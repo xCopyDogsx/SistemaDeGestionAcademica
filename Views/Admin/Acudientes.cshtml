@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "Administradores";
+    ViewBag.Title = "Acudientes";
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
+
 @if (Session["User"] == null || !Session["Rol"].Equals("Administrador"))
 {
     <script> window.location.href='@Url.Action("Index", "Home")'; </script>
@@ -12,13 +13,13 @@ else
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fas fa fa-lock"></i> Administradores</h1>
-                <p>Crea,elimina y edita docentes</p>
+                <h1><i class="fas fa-house-user"></i> Acudientes</h1>
+                <p>Crea,elimina y edita acudientes</p>
                 <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Admins/")">Administradores</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Acudientes/")">Acudientes</a></li>
             </ul>
         </div>
         <div class="row">
@@ -26,7 +27,7 @@ else
                 <div class="tile">
                     <div class="tile-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered" id="Administradores" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                            <table class="table table-hover table-bordered" id="Acudientes" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -49,11 +50,11 @@ else
         </div>
     </main>
     <!---Modal 1-->
-    <div class="modal fade" id="modalEditAdm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modalEditAcu" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header headerRegister" style="background: #007bff;color: #FFF;">
-                    <h5 class="modal-title" id="titleModal">Editar administrador</h5>
+                    <h5 class="modal-title" id="titleModal">Editar acudiente</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -115,11 +116,11 @@ else
         </div>
     </div>
     <!---Modal 2-->
-    <div class="modal fade" id="modalNewAdm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modalNewAcu" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
-                    <h5 class="modal-title" id="titleModal">Administrador nuevo</h5>
+                    <h5 class="modal-title" id="titleModal">Acudiente nuevo</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -175,20 +176,48 @@ else
             </div>
         </div>
     </div>
-   
+    <!--Modal 3--><div class="modal fade" id="modalViewAcu" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header header-primary" style="background: #04948c;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Datos del estudiante a cargo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>Documento de identidad:</td>
+                                <td id="celDoc"></td>
+                            </tr>
+                            <tr>
+                                <td>Nombres y apellidos:</td>
+                                <td id="celNombre"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @section scripts{
         <script>
         document.addEventListener('DOMContentLoaded', function () {
         $(document).ready(function () {
-            tableAdmins = $('#Administradores').DataTable({
+            tableAcudientes = $('#Acudientes').DataTable({
                     "language": {
                         "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                     },
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
-                        "url": "@Url.Content("~/Admin/JsonAdministradores")",
+                        "url": "@Url.Content("~/Admin/JsonAcudientes")",
                         "type": "POST",
                         "datatype": "json"
                     },
@@ -197,13 +226,13 @@ else
                     "responsivePriority": 1,
                     "data": null,
                     "columns": [
-                        { "data": "Adm_ID", "name": "Adm_ID", "autoWidth": true },
-                        { "data": "Adm_Doc", "name": "Adm_Doc", "autoWidth": true },
-                        { "data": "Adm_Nom", "name": "Adm_Nom", "autoWidth": true },
-                        { "data": "Adm_Apel", "name": "Adm_Apel", "autoWidth": true },
-                        { "data": "Adm_Tel", "name": "Adm_Tel", "autoWidth": true },
-                        { "data": "Adm_Email", "name": "Adm_Email", "autoWidth": true },
-                        { "data": "Adm_Status2", "name": "Adm_Status2", "autoWidth": true },
+                        { "data": "Acu_ID", "name": "Acu_ID", "autoWidth": true },
+                        { "data": "Acu_Doc", "name": "Acu_Doc", "autoWidth": true },
+                        { "data": "Acu_Nom", "name": "Acu_Nom", "autoWidth": true },
+                        { "data": "Acu_Apel", "name": "Acu_Apel", "autoWidth": true },
+                        { "data": "Acu_Tel", "name": "Acu_Tel", "autoWidth": true },
+                        { "data": "Acu_Email", "name": "Acu_Email", "autoWidth": true },
+                        { "data": "Acu_Status2", "name": "Acu_Status2", "autoWidth": true },
                         { "data": "Acciones", "name": "Acciones", "autoWidth": true }
                     ],
                     'dom': 'lBfrtip',
@@ -267,7 +296,7 @@ else
                     var data = { strIdentificacion: strIdentificacion, strNombre: strNombre, strApellido: strApellido, strEmail: strEmail, Telefono: Telefono,  strPassword: strPassword, StatusRedy: StatusRedy };
                       $.ajax({
                             type: "POST",
-                            url: "@Url.Action("InsertAdm", "Admin")",
+                            url: "@Url.Action("InsertAcu", "Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: data,
@@ -279,18 +308,18 @@ else
                                         title: "Éxito al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalNewAdm').modal("hide");
+                                    $('#modalNewAcu').modal("hide");
                                     formUsuario.reset();
-                                    tableAdmins.ajax.reload();
+                                    tableAcudientes.ajax.reload();
                                 }else {
                                     swal("Error", {
                                         icon: "error",
                                         title: "Error al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalNewAdm').modal("hide");
+                                    $('#modalNewAcu').modal("hide");
                                     formUsuario.reset();
-                                    tableAdmins.ajax.reload();
+                                    tableAcudientes.ajax.reload();
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
@@ -299,20 +328,20 @@ else
                                     title: "Error al procesar la petición",
                                     text: "Por favor comunique a un administrador en caso de que el error persista.",
                                 });
-                                $('#modalNewDoc').modal("hide");
+                                $('#modalNewAcu').modal("hide");
                                 formUsuario.reset();
-                                tableAdmins.ajax.reload();
+                                tableAcudientes.ajax.reload();
                             }
                         });
                        }
                         return false;
             }
         }, false);
-        function fntDelAdm(id) {
+        function fntDelAcu(id) {
             id = parseInt(id);
             var data = { id: id };
             swal({
-                title: "¿Esta seguro que desea eliminar este administrador?",
+                title: "¿Esta seguro que desea eliminar este acudiente?",
                 text: "¡Una vez realizado esto no se puede deshacer!",
                 icon: "warning",
                 buttons: true,
@@ -322,7 +351,7 @@ else
                     if (willDelete) {
                         $.ajax({
                             type: "POST",
-                            url: "@Url.Action("EliminarAdm","Admin")",
+                            url: "@Url.Action("EliminarAcu","Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: data,
@@ -334,14 +363,14 @@ else
                                         title: "Éxito al procesar la petición",
                                         text: msg,
                                     });
-                                    tableAdmins.ajax.reload();
+                                    tableAcudientes.ajax.reload();
                                 }else {
                                     swal("Error", {
                                         icon: "error",
                                         title: "Error al procesar la petición",
                                         text: msg,
                                     });
-                                    tableAdmins.ajax.reload();
+                                    tableAcudientes.ajax.reload();
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
@@ -360,11 +389,11 @@ else
                     }
                 });
         }
-        function fntEditAdm(id) {
+        function fntEditAcu(id) {
             var data = { id: id };
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("SelAdm","Admin")",
+                url: "@Url.Action("SelAcu","Admin")",
                 content: "application/json; charset=utf-8",
                 dataType: "json",
                 data: data,
@@ -383,7 +412,7 @@ else
                             title: "Error al procesar la petición",
                             text: msg,
                         });
-                        tableAdmins.ajax.reload();
+                        tableAcudientes.ajax.reload();
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
@@ -395,7 +424,7 @@ else
 
                 }
             });
-                $('#modalEditAdm').modal('show');
+                $('#modalEditAcu').modal('show');
         }
  /*------------Para el modal N° 2----------------------*/
         function sendEdit() {
@@ -431,7 +460,7 @@ else
                     var datax = { id:id,strIdentificacion: strIdentificacion, strNombre: strNombre, strApellido: strApellido, strEmail: strEmail, Telefono: Telefono, strPassword: strPassword, StatusRedy: StatusRedy };
                       $.ajax({
                             type: "POST",
-                            url: "@Url.Action("EditAdm", "Admin")",
+                            url: "@Url.Action("EditAcu", "Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: datax,
@@ -443,9 +472,9 @@ else
                                         title: "Éxito al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalEditDoc').modal("hide");
+                                    $('#modalEditAcu').modal("hide");
                                     formUsuario2.reset();
-                                    tableAdmins.ajax.reload();
+                                    tableAcudientes.ajax.reload();
                                 }else {
                                     swal("Error", {
                                         icon: "error",
@@ -465,9 +494,43 @@ else
             return false;
         }
         function openModal() {
-                $('#modalNewAdm').modal('show');
+                $('#modalNewAcu').modal('show');
             }
-      
+        function fntVerAcu(id) {
+            var data = { id: id };
+            console.log(id);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelAcuWhitAs", "Admin")",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: data,
+                success: function (d) {
+                    var msg = d.msg;
+                    if (d.Success == true) {
+                        document.querySelector("#celDoc").innerHTML = d.documento;
+                        document.querySelector("#celNombre").innerHTML = d.nombres;                        
+                        $('#modalViewAcu').modal('show');
+                    } else {
+                        swal("Error", {
+                            icon: "error",
+                            title: "Error al procesar la petición",
+                            text: msg,
+                        });
+                        tableAcudientes.ajax.reload();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    swal("Error", {
+                        icon: "error",
+                        title: "Error al procesar la petición",
+                        text: "Por favor comunique a un administrador en caso de que el error persista.",
+                    });
+
+                }
+            });
+
+            }
 
 
         </script>
@@ -476,7 +539,4 @@ else
     }
 
 }
-
-
-
 

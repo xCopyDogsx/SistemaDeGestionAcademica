@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -19,7 +19,7 @@
           <Key>
             <PropertyRef Name="Acu_ID" />
           </Key>
-          <Property Name="Acu_ID" Type="bigint" Nullable="false" />
+          <Property Name="Acu_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Acu_Doc" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Acu_Nom" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Acu_Apel" Type="varchar" MaxLength="200" Nullable="false" />
@@ -354,7 +354,8 @@
             <End Role="horario" EntitySet="horario" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="sgaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -372,7 +373,7 @@
           <Key>
             <PropertyRef Name="Acu_ID" />
           </Key>
-          <Property Name="Acu_ID" Type="Int64" Nullable="false" />
+          <Property Name="Acu_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Acu_Doc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Acu_Nom" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Acu_Apel" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
@@ -447,14 +448,23 @@
           <Property Name="Mat_ID" Type="Int64" Nullable="false" />
           <Property Name="Doc_ID" Type="Int64" Nullable="false" />
           <Property Name="Clas_Capa" Type="Int32" Nullable="false" />
+          <Property Name="Curs_ID" Type="Int64" Nullable="false" />
           <Property Name="Per_ID" Type="Int64" Nullable="false" />
           <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_4" FromRole="clase" ToRole="alumno_clase" />
           <NavigationProperty Name="periodo" Relationship="Self.clase_clase_ibfk_1" FromRole="clase" ToRole="periodo" />
           <NavigationProperty Name="materia" Relationship="Self.clase_clase_ibfk_2" FromRole="clase" ToRole="materia" />
           <NavigationProperty Name="docente" Relationship="Self.clase_clase_ibfk_3" FromRole="clase" ToRole="docente" />
+          <NavigationProperty Name="curso" Relationship="Self.FK_clase_curso" FromRole="clase" ToRole="curso" />
           <NavigationProperty Name="horario" Relationship="Self.horario_horario_ibfk_1" FromRole="clase" ToRole="horario" />
+        </EntityType>
+        <EntityType Name="curso">
+          <Key>
+            <PropertyRef Name="Curs_ID" />
+          </Key>
           <Property Name="Curs_ID" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="curso" Relationship="sgaModel.FK_clase_curso" FromRole="clase" ToRole="curso" />
+          <Property Name="Curs_Nom" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="clase" Relationship="Self.FK_clase_curso" FromRole="curso" ToRole="clase" />
         </EntityType>
         <EntityType Name="dias">
           <Key>
@@ -621,6 +631,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_clase_curso">
+          <End Role="curso" Type="Self.curso" Multiplicity="1" />
+          <End Role="clase" Type="Self.clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="curso">
+              <PropertyRef Name="Curs_ID" />
+            </Principal>
+            <Dependent Role="clase">
+              <PropertyRef Name="Curs_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="horario_horario_ibfk_1">
           <End Role="clase" Type="Self.clase" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -657,6 +679,7 @@
           <EntitySet Name="alumno_clase" EntityType="Self.alumno_clase" />
           <EntitySet Name="calificaciones" EntityType="Self.calificaciones" />
           <EntitySet Name="clase" EntityType="Self.clase" />
+          <EntitySet Name="curso" EntityType="Self.curso" />
           <EntitySet Name="dias" EntityType="Self.dias" />
           <EntitySet Name="docente" EntityType="Self.docente" />
           <EntitySet Name="horario" EntityType="Self.horario" />
@@ -694,6 +717,10 @@
             <End Role="docente" EntitySet="docente" />
             <End Role="clase" EntitySet="clase" />
           </AssociationSet>
+          <AssociationSet Name="FK_clase_curso" Association="Self.FK_clase_curso">
+            <End Role="curso" EntitySet="curso" />
+            <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
           <AssociationSet Name="horario_horario_ibfk_1" Association="Self.horario_horario_ibfk_1">
             <End Role="clase" EntitySet="clase" />
             <End Role="horario" EntitySet="horario" />
@@ -702,33 +729,7 @@
             <End Role="dias" EntitySet="dias" />
             <End Role="horario" EntitySet="horario" />
           </AssociationSet>
-          <EntitySet Name="curso" EntityType="sgaModel.curso" />
-          <AssociationSet Name="FK_clase_curso" Association="sgaModel.FK_clase_curso">
-            <End Role="curso" EntitySet="curso" />
-            <End Role="clase" EntitySet="clase" />
-          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="curso">
-          <Key>
-            <PropertyRef Name="Curs_ID" />
-          </Key>
-          <Property Name="Curs_ID" Type="Int64" Nullable="false" />
-          <Property Name="Curs_Nom" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="clase" Relationship="sgaModel.FK_clase_curso" FromRole="curso" ToRole="clase" />
-        </EntityType>
-        <Association Name="FK_clase_curso">
-          <End Type="sgaModel.curso" Role="curso" Multiplicity="1" />
-          <End Type="sgaModel.clase" Role="clase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="curso">
-              <PropertyRef Name="Curs_ID" />
-            </Principal>
-            <Dependent Role="clase">
-              <PropertyRef Name="Curs_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -817,12 +818,21 @@
           <EntitySetMapping Name="clase">
             <EntityTypeMapping TypeName="sgaModel.clase">
               <MappingFragment StoreEntitySet="clase">
-                <ScalarProperty Name="Curs_ID" ColumnName="Curs_ID" />
                 <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
                 <ScalarProperty Name="Mat_ID" ColumnName="Mat_ID" />
                 <ScalarProperty Name="Doc_ID" ColumnName="Doc_ID" />
                 <ScalarProperty Name="Clas_Capa" ColumnName="Clas_Capa" />
+                <ScalarProperty Name="Curs_ID" ColumnName="Curs_ID" />
                 <ScalarProperty Name="Per_ID" ColumnName="Per_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="curso">
+            <EntityTypeMapping TypeName="sgaModel.curso">
+              <MappingFragment StoreEntitySet="curso">
+                <ScalarProperty Name="Curs_ID" ColumnName="Curs_ID" />
+                <ScalarProperty Name="Curs_Nom" ColumnName="Curs_Nom" />
+                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -876,15 +886,6 @@
                 <ScalarProperty Name="Per_Nom" ColumnName="Per_Nom" />
                 <ScalarProperty Name="Per_Ini" ColumnName="Per_Ini" />
                 <ScalarProperty Name="Per_Fin" ColumnName="Per_Fin" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="curso">
-            <EntityTypeMapping TypeName="sgaModel.curso">
-              <MappingFragment StoreEntitySet="curso">
-                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
-                <ScalarProperty Name="Curs_Nom" ColumnName="Curs_Nom" />
-                <ScalarProperty Name="Curs_ID" ColumnName="Curs_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
