@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.ViewModels;
 using System.Linq.Dynamic;
-using System.Web.Services;
+
 
 namespace ProyectoFinal.Controllers
 {
@@ -938,7 +937,7 @@ namespace ProyectoFinal.Controllers
                     var oValidAl = (from d in db.administrador
                                     where d.Adm_Email == correo
                                     select d.Adm_ID).FirstOrDefault();
-                    if (oValidAl != null)
+                    if (oValidAl != 0 || oValidAl!=null)
                     {
                         return oValidAl;
                     }
@@ -1024,8 +1023,6 @@ namespace ProyectoFinal.Controllers
             }
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
         }
-
-
         public bool ElimAd(int id)
         {
             using (sgaEntities db = new sgaEntities())
@@ -1108,7 +1105,7 @@ namespace ProyectoFinal.Controllers
                         return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
                     }
                 }
-                return Json(new { Success = true, msg = "Acudiente almacenado con éxito. " });
+                return Json(new { Success = true, msg = "Administrador almacenado con éxito. " });
             }
             else
             {
@@ -1196,7 +1193,7 @@ namespace ProyectoFinal.Controllers
             }
         }
 
-
+        /*-----Administración de los periodos academicos---*/
 
         public ActionResult Periodos()
         {
@@ -1216,7 +1213,198 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
-       public ActionResult Materias()
+        [HttpPost]
+        public ActionResult JsonPeriodos()
+        {
+            List<TableAdminPeriodosVM> lst = new List<TableAdminPeriodosVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminPeriodosVM> query = (from Est in db.periodo
+                                                                 select new TableAdminPeriodosVM
+                                                                 {
+                                                                    Per_ID = Est.Per_ID,
+                                                                    Per_Nom = Est.Per_Nom,
+                                                                    Per_Ini = Est.Per_Ini,
+                                                                    Per_Fin = Est.Per_Fin
+                                                                 });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Per_Nom.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminPeriodosVM buscador in lst)
+                {
+                    buscador.Inicio = buscador.Per_Ini.ToString("dd/MM/yyyy");
+                    buscador.Final = buscador.Per_Fin.ToString("dd/MM/yyyy");
+                    buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditPer(" + buscador.Per_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelPer(" + buscador.Per_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                 
+                }
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
+        [HttpPost]
+        public ActionResult SelPer(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.periodo
+                                    where d.Per_ID == id
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Per_ID,
+                        nombres = oValidAl.Per_Nom,
+                        inicio = oValidAl.Per_Ini.ToString("yyyy-MM-dd"),
+                        final = oValidAl.Per_Fin.ToString("yyyy-MM-dd")
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        public bool ElimPe(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.periodo
+                                 where p.Per_ID == id
+                                 select p).Single();
+                    db.periodo.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult EliminarPer(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimPe(id))
+                {
+                    return Json(new { Success = true, msg = "El periodo se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        [HttpPost]
+        public ActionResult InsertPer(string strInicio, string strFinal, string strNombre)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    var oValidEm = (from d in db.periodo
+                                    where d.Per_Nom == strNombre
+                                    select d).FirstOrDefault();
+                   
+                    if (oValidEm != null)
+                    {
+                        return Json(new { Success = false, msg = "El nombre del periodo ya existe en nuestra base de datos." });
+                    }
+                    try
+                    {
+                        periodo estu = new periodo();
+                        estu.Per_Nom = strNombre;
+                        estu.Per_Ini = DateTime.ParseExact(strInicio, "yyyy-MM-dd", null);
+                        estu.Per_Fin = DateTime.ParseExact(strFinal, "yyyy-MM-dd", null);
+                        db.periodo.Add(estu);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        e.InnerException.ToString();
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Periodo almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditPer(int id, string strIni, string strFinal, string strNombre)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    try
+                    {
+                        var std = db.periodo.FirstOrDefault(edit => edit.Per_ID == id);
+                        std.Per_Nom = strNombre;
+                        std.Per_Ini = DateTime.ParseExact(strIni, "yyyy-MM-dd", null);
+                        std.Per_Fin = DateTime.ParseExact(strFinal, "yyyy-MM-dd", null);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Periodo actualizado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+
+        /*----Administración de las materias---*/
+        public ActionResult Materias()
         {
             if (Session["User"] == null)
             {
@@ -1234,6 +1422,8 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
+
+
 
     }
 }

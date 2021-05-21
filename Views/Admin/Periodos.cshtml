@@ -4,5 +4,421 @@
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
 
-<h2>Periodos</h2>
+@if (Session["User"] == null || !Session["Rol"].Equals("Administrador"))
+{
+    <script> window.location.href='@Url.Action("Index", "Home")'; </script>
+}
+else
+{
+    <main class="app-content">
+        <div class="app-title">
+            <div>
+                <h1><i class="fa fa-calendar-check-o"></i> Periodos academicos</h1>
+                <p>Crea,elimina y edita las fechas academicas</p>
+                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
+            </div>
+            <ul class="app-breadcrumb breadcrumb">
+                <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Periodos/")">Periodos academicos</a></li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tile">
+                    <div class="tile-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="Periodos" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre del ciclo</th>
+                                        <th>Fecha inicio</th>
+                                        <th>Fecha final</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!---Modal 1-->
+    <div class="modal fade" id="modalEditPer" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #007bff;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Editar periodo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                                <input type="hidden" id="idUsuario2" name="idUsuario2" value="">
+                                <p class="text-primary">Todos los campos son obligatorios.</p>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtNombre2">Nombre del periodo</label>
+                                        <input type="text" class="form-control valid validText" id="txtNombre2" name="txtNombre2" required="">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="txtIni2">Fecha de inicio</label>
+                                        <input type="date" class="form-control valid validDate" id="txtIni2" name="txtIni2" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtFinal2">Fecha final</label>
+                                        <input type="date" class="form-control valid validDate" id="txtFinal2" name="txtFinal2" required="">
+                                    </div>
+                                </div>
+                                <div class="tile-footer">
+                                    <button id="btnActionForm2" onclick="sendEdit();" class="btn btn-primary"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---Modal 2-->
+    <div class="modal fade" id="modalNewPer" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Periodo nuevo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formUsuario" name="formUsuario" class="form-horizontal">
+                        <p class="text-primary">Todos los campos son obligatorios.</p>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="txtNombre">Nombre del periodo</label>
+                                <input type="text" class="form-control valid validText" id="txtNombre" name="txtNombre" required="">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="txtIni">Fecha inicio</label>
+                                <input type="date" class="form-control valid validDate" id="txtIni" name="txtIni" required="">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="txtFinal">Fecha fin</label>
+                                <input type="date" class="form-control valid validDate" id="txtFinal" name="txtFinal" required="">
+                            </div>
+                        </div>
+                        <div class="tile-footer">
+                            <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @section scripts{
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        $(document).ready(function () {
+            tablePeriodos = $('#Periodos').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "@Url.Content("~/Admin/JsonPeriodos")",
+                        "type": "POST",
+                        "datatype": "json"
+                    },
+                    "pageLength": 10,
+                    "filter": true,
+                    "responsivePriority": 1,
+                    "data": null,
+                    "columns": [
+                        { "data": "Per_ID", "name": "Per_ID", "autoWidth": true },
+                        { "data": "Per_Nom", "name": "Per_Nom", "autoWidth": true },
+                        { "data": "Inicio", "name": "Inicio", "autoWidth": true },
+                        { "data": "Final", "name": "Final", "autoWidth": true },
+                        { "data": "Acciones", "name": "Acciones", "autoWidth": true }
+                    ],
+                    'dom': 'lBfrtip',
+                   'buttons': [
+                        {
+                            "extend": "copyHtml5",
+                            "text": "<i class='far fa-copy'></i> Copiar",
+                            "titleAttr": "Copiar",
+                            "className": "btn btn-secondary"
+                        }, {
+                            "extend": "excelHtml5",
+                            "text": "<i class='fas fa-file-excel'></i> Excel",
+                            "titleAttr": "Exportar a Excel",
+                            "className": "btn btn-success"
+                        }, {
+                            "extend": "pdfHtml5",
+                            "text": "<i class='fas fa-file-pdf'></i> PDF",
+                            "titleAttr": "Exportar a PDF",
+                            "className": "btn btn-danger"
+                        }, {
+                            "extend": "csvHtml5",
+                            "text": "<i class='fas fa-file-csv'></i> CSV",
+                            "titleAttr": "Exportar a CSV",
+                            "className": "btn btn-info"
+                        }
+                    ],
+                    "responsieve": "true",
+                    "bDestroy": true
+                });
+        });
+/*------------Para el modal N° 1----------------------*/
+            if (document.querySelector("#formUsuario")) {
+                let formUsuario = document.querySelector("#formUsuario");
+                formUsuario.onsubmit = function (e) {
+                    e.preventDefault();
+                    let strNombre = document.querySelector('#txtNombre').value;
+                    let strInicio = document.querySelector('#txtIni').value;
+                    let strFinal = document.querySelector('#txtFinal').value;
+
+                    if (strFinal == '' || strInicio == '' || strNombre == '') {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+                    if (strInicio > strFinal) {
+                        swal("Atención", "La fecha inicial no puede ser mayor a la fecha final.", "error");
+                        return false;
+                    }
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+
+
+                    var data = { strInicio: strInicio, strFinal: strFinal, strNombre: strNombre};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("InsertPer", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewPer').modal("hide");
+                                    formUsuario.reset();
+                                    tablePeriodos.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewPer').modal("hide");
+                                    formUsuario.reset();
+                                    tablePeriodos.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalNewPer').modal("hide");
+                                formUsuario.reset();
+                                tablePeriodos.ajax.reload();
+                            }
+                        });
+                       }
+                        return false;
+            }
+        }, false);
+        function fntDelPer(id) {
+            id = parseInt(id);
+            var data = { id: id };
+            swal({
+                title: "¿Esta seguro que desea eliminar este periodo?",
+                text: "¡Una vez realizado esto no se puede deshacer!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EliminarPer","Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tablePeriodos.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tablePeriodos.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+
+                            }
+                        });
+                    } else {
+                        swal("Acción cancelada", {
+                            icon: "error",
+                        });
+                    }
+                });
+        }
+        function fntEditPer(id) {
+            var data = { id: id };
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelPer","Admin")",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: data,
+                success: function (d) {
+                    var msg = d.msg;
+                    if (d.Success == true) {
+                        document.querySelector("#idUsuario2").value = d.idpersona;
+                        document.querySelector("#txtNombre2").value = d.nombres;
+                        document.querySelector("#txtIni2").value = d.inicio;
+                        document.querySelector("#txtFinal2").value = d.final;
+                    } else {
+                        swal("Error", {
+                            icon: "error",
+                            title: "Error al procesar la petición",
+                            text: msg,
+                        });
+                        tablePeriodos.ajax.reload();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    swal("Error", {
+                        icon: "error",
+                        title: "Error al procesar la petición",
+                        text: "Por favor comunique a un administrador en caso de que el error persista.",
+                    });
+                    $('#modalEditPer').modal('hide');
+                }
+            });
+                $('#modalEditPer').modal('show');
+        }
+ /*------------Para el modal N° 2----------------------*/
+        function sendEdit() {
+                    let id = document.querySelector('#idUsuario2').value;
+                    id = parseInt(id);
+                    let strNombre = document.querySelector('#txtNombre2').value;
+                    let strIni = document.querySelector('#txtIni2').value.toString();
+                    let strFinal = document.querySelector('#txtFinal2').value.toString();
+            
+                    if (id == null) {
+                        swal("Atención", "Error interno con el ID.", "error");
+                        return false;
+                    }
+                    if (strIni == '' || strFinal == '' || strNombre == '') {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+                     if (document.querySelector('#txtIni2').value > document.querySelector('#txtFinal2').value) {
+                            swal("Atención", "La fecha inicial no puede ser mayor a la final.", "error");
+                            return false;
+                            } 
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+                    var datax = { id:id,strIni: strIni, strFinal:strFinal, strNombre:strNombre};
+                      $.ajax(   {
+                            type: "POST",
+                            url: "@Url.Action("EditPer", "Admin")",
+                            content: "application/json; charset=utf-8;",
+                            dataType: "json",
+                            data: datax,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEditPer').modal("hide");
+                                    formUsuario2.reset();
+                                    tablePeriodos.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+
+                                });
+                                console.log("XHR " + xhr);
+                                console.log("text " + textStatus);
+                                console.log("error " + errorThrown);
+                            }
+                        });
+            return false;
+            }
+
+        function openModal() {
+                $('#modalNewPer').modal('show');
+            }
+
+
+
+        </script>
+
+
+    }
+
+}
 
