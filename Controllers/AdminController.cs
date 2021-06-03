@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.ViewModels;
 using System.Linq.Dynamic;
-
+using System.Web.UI;
 
 namespace ProyectoFinal.Controllers
 {
@@ -19,6 +19,7 @@ namespace ProyectoFinal.Controllers
         public string sortColumnDir = "";
         public string searchValue = "";
         public int pageSize, skip, recordsTotal;
+        public DateTime fecha = DateTime.Now;
         /*Variables normales*/
         private Helpers help = new Helpers();
         // GET: Admin
@@ -1422,8 +1423,233 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
+        [HttpPost]
+        public ActionResult JsonMaterias()
+        {
+            List<TableAdminMateriasVM> lst = new List<TableAdminMateriasVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminMateriasVM> query = (from Est in db.materia
+                                                                 select new TableAdminMateriasVM
+                                                                 {
+                                                                     Mat_ID = Est.Mat_ID,
+                                                                     Mat_Nom = Est.Mat_Nom,
+                                                                     Mat_Desc = Est.Mat_Desc
+                                                                 });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Mat_Nom.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminMateriasVM buscador in lst)
+                {
+                    buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditMat(" + buscador.Mat_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelMat(" + buscador.Mat_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                }
 
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
+        public bool ElimMa(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.materia
+                                 where p.Mat_ID == id
+                                 select p).Single();
+                    db.materia.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult EliminarMat(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimMa(id))
+                {
+                    return Json(new { Success = true, msg = "La asignatura se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        [HttpPost]
+        public ActionResult InsertMat(string strNombre, string descripcion)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                  
+                    try
+                    {
+                        materia estu = new materia();
+                        estu.Mat_Nom = strNombre;
+                        estu.Mat_Desc = descripcion;
+                        db.materia.Add(estu);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        e.InnerException.ToString();
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Asignatura almacenada con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult SelMat(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
 
+                    var oValidAl = (from d in db.materia
+                                    where d.Mat_ID == id
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
 
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Mat_ID,
+                        nombre = oValidAl.Mat_Nom,
+                        descripcion = oValidAl.Mat_Desc
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditMat(int id,string strNombre, string descripcion)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                  
+
+                    try
+                    {
+                        var std = db.materia.FirstOrDefault(edit => edit.Mat_ID == id);
+                      
+                        std.Mat_Nom = strNombre;
+                        std.Mat_Desc = descripcion;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Asignatura actualizada con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        /*--------------Administracion de cursos-----------------*/
+        public ActionResult Clases()
+        {
+            List<CarouselAdminClasesVM> lista = new List<CarouselAdminClasesVM>(RetornaCursos());
+           
+            if (Session["User"] == null)
+            {
+                HomeController home = new HomeController();
+                return home.Index();
+            }
+            else if (Session["Rol"].Equals("Adminstrador"))
+            { 
+                return View(lista);
+            }
+            else
+            {
+                HomeController home = new HomeController();
+                return home.Index();
+            }
+        }
+        public List<CarouselAdminClasesVM> RetornaCursos()
+        {
+                List<CarouselAdminClasesVM> lst = new List<CarouselAdminClasesVM>();
+                try
+                {
+                    using (sgaEntities db = new sgaEntities())
+                    {
+                        IQueryable<CarouselAdminClasesVM> query= (from curs in db.curso
+                                                                  join clas in db.clase on curs.Clas_ID equals clas.Clas_ID
+                                                                  join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                                  where fecha >= per.Per_Ini && fecha <= per.Per_Fin
+                                                                  select new CarouselAdminClasesVM {
+                                                                    Curs_Nom=curs.Curs_Nom,
+                                                                    Clas_Capa=clas.Clas_Capa,
+                                                                    Per_Ini=per.Per_Ini,
+                                                                    Per_Fin=per.Per_Fin,
+                                                                    Clas_ID=clas.Clas_ID
+                                                                  });
+
+                        lst = query.ToList();
+                  
+                        return lst;
+                    }
+                }catch(Exception e)
+                {
+                    return null;
+                }      
+        }
     }
 }

@@ -303,10 +303,12 @@
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\CarouselAdminClasesVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminAcudientesVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminAdministradoresVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminDocentesVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminEstudiantesVM.cs" />
+    <Compile Include="Models\ViewModels\TableAdminMateriasVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminPeriodosVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -383,6 +385,7 @@
     <Content Include="Views\Admin\Materias.cshtml" />
     <Content Include="Views\Admin\Admins.cshtml" />
     <Content Include="Views\Admin\Acudientes.cshtml" />
+    <Content Include="Views\Admin\Clases.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

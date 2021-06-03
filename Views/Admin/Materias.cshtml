@@ -3,6 +3,408 @@
     ViewBag.Title = "Materias";
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
+@if (Session["User"] == null || !Session["Rol"].Equals("Administrador"))
+{
+    <script> window.location.href='@Url.Action("Index", "Home")'; </script>
+}
+else
+{
+    <main class="app-content">
+        <div class="app-title">
+            <div>
+                <h1><i class="fas fa-book"></i> Materias</h1>
+                <p>Crea,elimina y edita asignaturas</p>
+                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
+            </div>
+            <ul class="app-breadcrumb breadcrumb">
+                <li class="breadcrumb-item"><i class="fas fa-home"></i></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Materias/")">Materias</a></li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tile">
+                    <div class="tile-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="Materias" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Descripcion</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!---Modal 1-->
+    <div class="modal fade" id="modalEditMat" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #007bff;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Editar materia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                                <input type="hidden" id="idUsuario2" name="idUsuario2" value="">
+                                <p class="text-primary">Todos los campos son obligatorios.</p>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtNombreMateria">Nombre de la materia</label>
+                                        <input type="text" class="form-control" id="txtNombreMateria" name="txtNombreMateria" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <label for="descripcion">Descripción</label>
+                                    <textarea id="descripcion" class="form-control" rows="4" name="descripcion" required=""></textarea>
+                                </div>
+                                <div class="tile-footer">
+                                    <button id="btnActionForm2" onclick="sendEdit();" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---Modal 2-->
+    <div class="modal fade" id="modalNewMat" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Materia nueva</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <form id="formUsuario" name="formUsuario" class="form-horizontal">
+                                <input type="hidden" id="idUsuario" name="idUsuario2" value="">
+                                <p class="text-primary">Todos los campos son obligatorios.</p>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtNombreMateriax">Nombre de la materia</label>
+                                        <input type="text" class="form-control" id="txtNombreMateriax" name="txtNombreMateriax" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <label for="descripcion">Descripción</label>
+                                    <textarea id="descripcionx" class="form-control" rows="4" name="descripcionx" required=""></textarea>
+                                </div>
+                                <div class="tile-footer">
+                                    <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    @section scripts{
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        $(document).ready(function () {
+            tableMaterias = $('#Materias').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "@Url.Content("~/Admin/JsonMaterias")",
+                        "type": "POST",
+                        "datatype": "json"
+                    },
+                    "pageLength": 10,
+                    "filter": true,
+                    "responsivePriority": 1,
+                    "data": null,
+                    "columns": [
+                        { "data": "Mat_ID", "name": "Mat_ID", "autoWidth": true },
+                        { "data": "Mat_Nom", "name": "Mat_Nom", "autoWidth": true },
+                        { "data": "Mat_Desc", "name": "Mat_Desc", "autoWidth": true },
+                        { "data": "Acciones", "name": "Acciones", "autoWidth": true }
+                    ],
+                    'dom': 'lBfrtip',
+                   'buttons': [
+                        {
+                            "extend": "copyHtml5",
+                            "text": "<i class='far fa-copy'></i> Copiar",
+                            "titleAttr": "Copiar",
+                            "className": "btn btn-secondary"
+                        }, {
+                            "extend": "excelHtml5",
+                            "text": "<i class='fas fa-file-excel'></i> Excel",
+                            "titleAttr": "Exportar a Excel",
+                            "className": "btn btn-success"
+                        }, {
+                            "extend": "pdfHtml5",
+                            "text": "<i class='fas fa-file-pdf'></i> PDF",
+                            "titleAttr": "Exportar a PDF",
+                            "className": "btn btn-danger"
+                        }, {
+                            "extend": "csvHtml5",
+                            "text": "<i class='fas fa-file-csv'></i> CSV",
+                            "titleAttr": "Exportar a CSV",
+                            "className": "btn btn-info"
+                        }
+                    ],
+                    "responsieve": "true",
+                    "bDestroy": true
+                });
+        });
+/*------------Para el modal N° 1----------------------*/
+            if (document.querySelector("#formUsuario")) {
+                let formUsuario = document.querySelector("#formUsuario");
+                formUsuario.onsubmit = function (e) {
+                    e.preventDefault();
+
+                    let strNombre = document.querySelector('#txtNombreMateriax').value;
+                    let descripcion = document.querySelector('#descripcionx').value;
+
+
+                    if (strNombre==''||descripcion=='') {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+
+
+                    var data = { strNombre: strNombre,descripcion:descripcion};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("InsertMat", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewMat').modal("hide");
+                                    formUsuario.reset();
+                                    tableMaterias.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewMat').modal("hide");
+                                    formUsuario.reset();
+                                    tableMaterias.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalNewMat').modal("hide");
+                                formUsuario.reset();
+                                tableMaterias.ajax.reload();
+                            }
+                        });
+                       }
+                        return false;
+            }
+        }, false);
+        function fntDelMat(id) {
+            id = parseInt(id);
+            var data = { id: id };
+            swal({
+                title: "¿Esta seguro que desea eliminar esta asignatura?",
+                text: "¡Una vez realizado esto no se puede deshacer!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EliminarMat","Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tableMaterias.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tableMaterias.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+
+                            }
+                        });
+                    } else {
+                        swal("Acción cancelada", {
+                            icon: "error",
+                        });
+                    }
+                });
+        }
+      function fntEditMat(id) {
+                var bool = false;
+          var data = { id: id };
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelMat","Admin")",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: data,
+                success: function (d) {
+                    var msg = d.msg;
+                    if (d.Success == true) {
+                        document.querySelector("#idUsuario2").value = d.idpersona;
+                        document.querySelector("#txtNombreMateria").value = d.nombre;
+                        document.querySelector("#descripcion").value = d.descripcion;
+                    } else {
+                        swal("Error", {
+                            icon: "error",
+                            title: "Error al procesar la petición",
+                            text: msg,
+                        });
+                        bool = true;
+                
+                        tableMaterias.ajax.reload();
+                      
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    swal("Error", {
+                        icon: "error",
+                        title: "Error al procesar la petición",
+                        text: "Por favor comunique a un administrador en caso de que el error persista.",
+                    });
+
+                }
+            });
+          if (!bool) {
+              $('#modalEditMat').modal('show');
+          } else {
+              $('#modalEditMat').modal('hide');
+          }
+               
+        }
+ /*------------Para el modal N° 2----------------------*/
+        function sendEdit() {
+                    let id = document.querySelector('#idUsuario2').value;
+                    id = parseInt(id);
+
+                    let strNombre = document.querySelector('#txtNombreMateria').value;
+                    let descripcion = document.querySelector('#descripcion').value;
+                    if (id == null) {
+                        swal("Atención", "Error interno con el ID.", "error");
+                        return false;
+                    }
+                    if (descripcion == '' || strNombre == '' ) {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+                    var datax = { id:id,strNombre: strNombre, descripcion: descripcion};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EditMat", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: datax,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEditMat').modal("hide");
+                                    formUsuario2.reset();
+                                    tableMaterias.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                            }
+                        });
+            return false;
+        }
+        function openModal() {
+                $('#modalNewMat').modal('show');
+            }
+
+
+
+        </script>
+
+
+    }
+
+}
 
 
