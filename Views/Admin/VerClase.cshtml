@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "Clasex";
+    Layout = "~/Views/Shared/_Paneles.cshtml";
+}
+
+<main class="app-content">
+    <div class="app-title">
+        <div>
+            <h1><i class="fa fa-calendar-check-o"></i> Periodos academicos</h1>
+            <p>Crea,elimina y edita las fechas academicas</p>
+            <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
+        </div>
+        <ul class="app-breadcrumb breadcrumb">
+            <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+            <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Periodos/")">Periodos academicos</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" id="Periodos" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre del ciclo</th>
+                                    <th>Fecha inicio</th>
+                                    <th>Fecha final</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+

@@ -1,11 +1,8 @@
-﻿
-
-
-@{
+﻿@{
 
     ViewBag.Title = "Clases";
     Layout = "~/Views/Shared/_Paneles.cshtml";
-    
+
 }
 @if (Session["User"] == null || !Session["Rol"].Equals("Administrador"))
 {
@@ -13,7 +10,6 @@
 }
 else
 {
-
     <main class="app-content">
         <div class="app-title">
             <div>
@@ -35,29 +31,27 @@ else
                         <section class="pt-5 pb-5">
                             <div class="container">
                                 <div class="row">
-
                                     <div class="col-12">
                                         <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel">
-
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
-                                                    <div class="row">
-                                                     
-                                                    
-
-               
-                                                            <div class="col-md-4 mb-3">
-                                                                <div class="card">
-                                                                    <img class="img-fluid" alt="100%x280" src="https://images.unsplash.com/photo-1532781914607-2031eca2f00d?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1080&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjMyMDc0fQ&amp;s=7c625ea379640da3ef2e24f20df7ce8d">
+                                                    <div class="row">                   
+                                                        @foreach (var datax in ViewContext.Controller.ViewBag.Cursos)
+                                                        {
+                                                        <div class="col-md-4  mb-3">
+                                                                <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                                    <img class="img-fluid" alt="Clase" src="~/img/panel/clase.jpg" style="border-radius: 20px; border-style: solid; ">
                                                                     <div class="card-body">
-                                                                        <h4 class="card-title">@ViewBag.contador XD</h4>
-                                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
+                                                                        <h4 class="card-title">@datax.Curs_Nom</h4>
+                                                                        <p class="card-text">Capacidad: @datax.Clas_Capa personas.</p>
+                                                                        <p class="card-text">Fecha de inicio: @datax.Per_Ini</p>
+                                                                        <p class="card-text">Fecha de fin: @datax.Per_Fin</p>
+                                                                        <hr />
+                                                                        <button onclick="verCurso(@datax.Clas_ID);" class="btn btn-primary">Administrar curso</button>
                                                                     </div>
-
                                                                 </div>
-                                                            </div>
-                                                     <!-- aca -->
+                                                            </div>  
+                                                        } <!-- aca -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -78,6 +72,10 @@ else
 
     @section scripts{
         <script>
+            function verCurso(id) {
+              var url = '@Url.Action("VerClase", "Admin", new { id = "__id__" })';
+                window.location.href = url.replace('__id__', id);
+            }
 
         </script>
 

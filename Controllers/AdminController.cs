@@ -6,6 +6,7 @@ using ProyectoFinal.Models;
 using ProyectoFinal.Models.ViewModels;
 using System.Linq.Dynamic;
 using System.Web.UI;
+using System.Diagnostics;
 
 namespace ProyectoFinal.Controllers
 {
@@ -1606,16 +1607,33 @@ namespace ProyectoFinal.Controllers
         /*--------------Administracion de cursos-----------------*/
         public ActionResult Clases()
         {
-            List<CarouselAdminClasesVM> lista = new List<CarouselAdminClasesVM>(RetornaCursos());
-           
+            List<CarouselAdminClasesVM> lista = new List<CarouselAdminClasesVM>();
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<CarouselAdminClasesVM> query = (from curs in db.curso
+                                                           join clas in db.clase on curs.Clas_ID equals clas.Clas_ID
+                                                           join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                           where fecha >= per.Per_Ini && fecha <= per.Per_Fin
+                                                           select new CarouselAdminClasesVM
+                                                           {
+                                                               Curs_Nom = curs.Curs_Nom,
+                                                               Clas_Capa = clas.Clas_Capa,
+                                                               Per_Ini = per.Per_Ini,
+                                                               Per_Fin = per.Per_Fin,
+                                                               Clas_ID = clas.Clas_ID
+                                                           });
+                lista = query.ToList();
+
+            }
+            ViewBag.Cursos =lista;
             if (Session["User"] == null)
             {
                 HomeController home = new HomeController();
                 return home.Index();
             }
             else if (Session["Rol"].Equals("Adminstrador"))
-            { 
-                return View(lista);
+            {
+                return View();
             }
             else
             {
@@ -1623,33 +1641,11 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
-        public List<CarouselAdminClasesVM> RetornaCursos()
+       
+        public ActionResult VerClase(int id)
         {
-                List<CarouselAdminClasesVM> lst = new List<CarouselAdminClasesVM>();
-                try
-                {
-                    using (sgaEntities db = new sgaEntities())
-                    {
-                        IQueryable<CarouselAdminClasesVM> query= (from curs in db.curso
-                                                                  join clas in db.clase on curs.Clas_ID equals clas.Clas_ID
-                                                                  join per in db.periodo on clas.Per_ID equals per.Per_ID
-                                                                  where fecha >= per.Per_Ini && fecha <= per.Per_Fin
-                                                                  select new CarouselAdminClasesVM {
-                                                                    Curs_Nom=curs.Curs_Nom,
-                                                                    Clas_Capa=clas.Clas_Capa,
-                                                                    Per_Ini=per.Per_Ini,
-                                                                    Per_Fin=per.Per_Fin,
-                                                                    Clas_ID=clas.Clas_ID
-                                                                  });
-
-                        lst = query.ToList();
-                  
-                        return lst;
-                    }
-                }catch(Exception e)
-                {
-                    return null;
-                }      
+            ViewBag.ID = id;
+            return View();
         }
     }
 }

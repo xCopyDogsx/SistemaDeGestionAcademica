@@ -386,6 +386,7 @@
     <Content Include="Views\Admin\Admins.cshtml" />
     <Content Include="Views\Admin\Acudientes.cshtml" />
     <Content Include="Views\Admin\Clases.cshtml" />
+    <Content Include="Views\Admin\VerClase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
