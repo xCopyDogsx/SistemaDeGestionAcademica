@@ -275,11 +275,17 @@
     <Compile Include="Models\docente.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\docente_clase.cs">
+      <DependentUpon>SGABD.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Helpers.cs" />
     <Compile Include="Models\horario.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\materia.cs">
+      <DependentUpon>SGABD.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\materia_clase.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\periodo.cs">
@@ -299,6 +305,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SGABD.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>SGABD.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>SGABD.tt</DependentUpon>

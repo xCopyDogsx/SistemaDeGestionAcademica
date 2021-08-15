@@ -4,7 +4,23 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="sgaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="docente_clase">
+          <Key>
+            <PropertyRef Name="Dccl_ID" />
+          </Key>
+          <Property Name="Dccl_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Clas_ID" Type="bigint" Nullable="false" />
+          <Property Name="Doc_ID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="materia_clase">
+          <Key>
+            <PropertyRef Name="Macl_ID" />
+          </Key>
+          <Property Name="Macl_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Clas_ID" Type="bigint" Nullable="false" />
+          <Property Name="Mat_ID" Type="bigint" Nullable="false" />
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -83,8 +99,6 @@
             <PropertyRef Name="Clas_ID" />
           </Key>
           <Property Name="Clas_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Mat_ID" Type="bigint" Nullable="false" />
-          <Property Name="Doc_ID" Type="bigint" Nullable="false" />
           <Property Name="Clas_Capa" Type="int" Nullable="false" />
           <Property Name="Curs_ID" Type="bigint" Nullable="false" />
           <Property Name="Per_ID" Type="bigint" Nullable="false" />
@@ -93,9 +107,8 @@
           <Key>
             <PropertyRef Name="Curs_ID" />
           </Key>
-          <Property Name="Curs_ID" Type="bigint" Nullable="false" />
+          <Property Name="Curs_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Curs_Nom" Type="varchar" MaxLength="150" Nullable="false" />
-          <Property Name="Clas_ID" Type="bigint" Nullable="false" />
         </EntityType>
         <EntityType Name="dias">
           <Key>
@@ -227,36 +240,10 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="clase$clase_ibfk_2">
-          <End Role="materia" Type="Self.materia" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="clase" Type="Self.clase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="materia">
-              <PropertyRef Name="Mat_ID" />
-            </Principal>
-            <Dependent Role="clase">
-              <PropertyRef Name="Mat_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="clase$clase_ibfk_3">
-          <End Role="docente" Type="Self.docente" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="clase" Type="Self.clase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="docente">
-              <PropertyRef Name="Doc_ID" />
-            </Principal>
-            <Dependent Role="clase">
-              <PropertyRef Name="Doc_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_clase_curso">
-          <End Role="curso" Type="Self.curso" Multiplicity="1" />
+          <End Role="curso" Type="Self.curso" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="clase" Type="Self.clase" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="curso">
@@ -264,6 +251,62 @@
             </Principal>
             <Dependent Role="clase">
               <PropertyRef Name="Curs_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_docente_clase_clase">
+          <End Role="clase" Type="Self.clase" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="docente_clase" Type="Self.docente_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="docente_clase">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_docente_clase_docente">
+          <End Role="docente" Type="Self.docente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="docente_clase" Type="Self.docente_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="docente">
+              <PropertyRef Name="Doc_ID" />
+            </Principal>
+            <Dependent Role="docente_clase">
+              <PropertyRef Name="Doc_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materia_clase_clase">
+          <End Role="clase" Type="Self.clase" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="materia_clase" Type="Self.materia_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="materia_clase">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materia_clase_materia">
+          <End Role="materia" Type="Self.materia" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="materia_clase" Type="Self.materia_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="materia">
+              <PropertyRef Name="Mat_ID" />
+            </Principal>
+            <Dependent Role="materia_clase">
+              <PropertyRef Name="Mat_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -295,7 +338,44 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="InsertarClase" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClassCapa" Type="int" Mode="In" />
+          <Parameter Name="Perid" Type="bigint" Mode="In" />
+        </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="sgaModelStoreContainer">
+          <EntitySet Name="docente_clase" EntityType="Self.docente_clase" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="materia_clase" EntityType="Self.materia_clase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="acudiente" EntityType="Self.acudiente" Schema="sga" store:Type="Tables" />
           <EntitySet Name="administrador" EntityType="Self.administrador" Schema="sga" store:Type="Tables" />
@@ -333,17 +413,25 @@
             <End Role="periodo" EntitySet="periodo" />
             <End Role="clase" EntitySet="clase" />
           </AssociationSet>
-          <AssociationSet Name="clase$clase_ibfk_2" Association="Self.clase$clase_ibfk_2">
-            <End Role="materia" EntitySet="materia" />
-            <End Role="clase" EntitySet="clase" />
-          </AssociationSet>
-          <AssociationSet Name="clase$clase_ibfk_3" Association="Self.clase$clase_ibfk_3">
-            <End Role="docente" EntitySet="docente" />
-            <End Role="clase" EntitySet="clase" />
-          </AssociationSet>
           <AssociationSet Name="FK_clase_curso" Association="Self.FK_clase_curso">
             <End Role="curso" EntitySet="curso" />
             <End Role="clase" EntitySet="clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_docente_clase_clase" Association="Self.FK_docente_clase_clase">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="docente_clase" EntitySet="docente_clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_docente_clase_docente" Association="Self.FK_docente_clase_docente">
+            <End Role="docente" EntitySet="docente" />
+            <End Role="docente_clase" EntitySet="docente_clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materia_clase_clase" Association="Self.FK_materia_clase_clase">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="materia_clase" EntitySet="materia_clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materia_clase_materia" Association="Self.FK_materia_clase_materia">
+            <End Role="materia" EntitySet="materia" />
+            <End Role="materia_clase" EntitySet="materia_clase" />
           </AssociationSet>
           <AssociationSet Name="horario$horario_ibfk_1" Association="Self.horario$horario_ibfk_1">
             <End Role="clase" EntitySet="clase" />
@@ -354,11 +442,30 @@
             <End Role="horario" EntitySet="horario" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="sgaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="docente_clase">
+          <Key>
+            <PropertyRef Name="Dccl_ID" />
+          </Key>
+          <Property Name="Dccl_ID" Type="Int64" Nullable="false" />
+          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
+          <Property Name="Doc_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="clase" Relationship="Self.FK_docente_clase_clase" FromRole="docente_clase" ToRole="clase" />
+          <NavigationProperty Name="docente" Relationship="Self.FK_docente_clase_docente" FromRole="docente_clase" ToRole="docente" />
+        </EntityType>
+        <EntityType Name="materia_clase">
+          <Key>
+            <PropertyRef Name="Macl_ID" />
+          </Key>
+          <Property Name="Macl_ID" Type="Int64" Nullable="false" />
+          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
+          <Property Name="Mat_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="clase" Relationship="Self.FK_materia_clase_clase" FromRole="materia_clase" ToRole="clase" />
+          <NavigationProperty Name="materia" Relationship="Self.FK_materia_clase_materia" FromRole="materia_clase" ToRole="materia" />
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -445,15 +552,13 @@
             <PropertyRef Name="Clas_ID" />
           </Key>
           <Property Name="Clas_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Mat_ID" Type="Int64" Nullable="false" />
-          <Property Name="Doc_ID" Type="Int64" Nullable="false" />
           <Property Name="Clas_Capa" Type="Int32" Nullable="false" />
           <Property Name="Curs_ID" Type="Int64" Nullable="false" />
           <Property Name="Per_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="docente_clase" Relationship="Self.FK_docente_clase_clase" FromRole="clase" ToRole="docente_clase" />
+          <NavigationProperty Name="materia_clase" Relationship="Self.FK_materia_clase_clase" FromRole="clase" ToRole="materia_clase" />
           <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_4" FromRole="clase" ToRole="alumno_clase" />
           <NavigationProperty Name="periodo" Relationship="Self.clase_clase_ibfk_1" FromRole="clase" ToRole="periodo" />
-          <NavigationProperty Name="materia" Relationship="Self.clase_clase_ibfk_2" FromRole="clase" ToRole="materia" />
-          <NavigationProperty Name="docente" Relationship="Self.clase_clase_ibfk_3" FromRole="clase" ToRole="docente" />
           <NavigationProperty Name="curso" Relationship="Self.FK_clase_curso" FromRole="clase" ToRole="curso" />
           <NavigationProperty Name="horario" Relationship="Self.horario_horario_ibfk_1" FromRole="clase" ToRole="horario" />
         </EntityType>
@@ -463,7 +568,6 @@
           </Key>
           <Property Name="Curs_ID" Type="Int64" Nullable="false" />
           <Property Name="Curs_Nom" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Clas_ID" Type="Int64" Nullable="false" />
           <NavigationProperty Name="clase" Relationship="Self.FK_clase_curso" FromRole="curso" ToRole="clase" />
         </EntityType>
         <EntityType Name="dias">
@@ -487,7 +591,7 @@
           <Property Name="Doc_Passw" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Doc_FecReg" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Doc_Status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="clase" Relationship="Self.clase_clase_ibfk_3" FromRole="docente" ToRole="clase" />
+          <NavigationProperty Name="docente_clase" Relationship="Self.FK_docente_clase_docente" FromRole="docente" ToRole="docente_clase" />
         </EntityType>
         <EntityType Name="horario">
           <Key>
@@ -508,7 +612,7 @@
           <Property Name="Mat_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Mat_Nom" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Mat_Desc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="clase" Relationship="Self.clase_clase_ibfk_2" FromRole="materia" ToRole="clase" />
+          <NavigationProperty Name="materia_clase" Relationship="Self.FK_materia_clase_materia" FromRole="materia" ToRole="materia_clase" />
         </EntityType>
         <EntityType Name="periodo">
           <Key>
@@ -521,6 +625,62 @@
           <NavigationProperty Name="alumno_clase" Relationship="Self.alumno_clase_alumno_clase_ibfk_3" FromRole="periodo" ToRole="alumno_clase" />
           <NavigationProperty Name="clase" Relationship="Self.clase_clase_ibfk_1" FromRole="periodo" ToRole="clase" />
         </EntityType>
+        <Association Name="FK_docente_clase_clase">
+          <End Role="clase" Type="Self.clase" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="docente_clase" Type="Self.docente_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="docente_clase">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_docente_clase_docente">
+          <End Role="docente" Type="Self.docente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="docente_clase" Type="Self.docente_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="docente">
+              <PropertyRef Name="Doc_ID" />
+            </Principal>
+            <Dependent Role="docente_clase">
+              <PropertyRef Name="Doc_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materia_clase_clase">
+          <End Role="clase" Type="Self.clase" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="materia_clase" Type="Self.materia_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clase">
+              <PropertyRef Name="Clas_ID" />
+            </Principal>
+            <Dependent Role="materia_clase">
+              <PropertyRef Name="Clas_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materia_clase_materia">
+          <End Role="materia" Type="Self.materia" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="materia_clase" Type="Self.materia_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="materia">
+              <PropertyRef Name="Mat_ID" />
+            </Principal>
+            <Dependent Role="materia_clase">
+              <PropertyRef Name="Mat_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="alumno_alumno_ibfk_1">
           <End Role="acudiente" Type="Self.acudiente" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -603,34 +763,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="clase_clase_ibfk_2">
-          <End Role="materia" Type="Self.materia" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="clase" Type="Self.clase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="materia">
-              <PropertyRef Name="Mat_ID" />
-            </Principal>
-            <Dependent Role="clase">
-              <PropertyRef Name="Mat_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="clase_clase_ibfk_3">
-          <End Role="docente" Type="Self.docente" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="clase" Type="Self.clase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="docente">
-              <PropertyRef Name="Doc_ID" />
-            </Principal>
-            <Dependent Role="clase">
-              <PropertyRef Name="Doc_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_clase_curso">
           <End Role="curso" Type="Self.curso" Multiplicity="1" />
           <End Role="clase" Type="Self.clase" Multiplicity="*" />
@@ -672,6 +804,8 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="sgaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="docente_clase" EntityType="Self.docente_clase" />
+          <EntitySet Name="materia_clase" EntityType="Self.materia_clase" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="acudiente" EntityType="Self.acudiente" />
           <EntitySet Name="administrador" EntityType="Self.administrador" />
@@ -685,6 +819,22 @@
           <EntitySet Name="horario" EntityType="Self.horario" />
           <EntitySet Name="materia" EntityType="Self.materia" />
           <EntitySet Name="periodo" EntityType="Self.periodo" />
+          <AssociationSet Name="FK_docente_clase_clase" Association="Self.FK_docente_clase_clase">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="docente_clase" EntitySet="docente_clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_docente_clase_docente" Association="Self.FK_docente_clase_docente">
+            <End Role="docente" EntitySet="docente" />
+            <End Role="docente_clase" EntitySet="docente_clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materia_clase_clase" Association="Self.FK_materia_clase_clase">
+            <End Role="clase" EntitySet="clase" />
+            <End Role="materia_clase" EntitySet="materia_clase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materia_clase_materia" Association="Self.FK_materia_clase_materia">
+            <End Role="materia" EntitySet="materia" />
+            <End Role="materia_clase" EntitySet="materia_clase" />
+          </AssociationSet>
           <AssociationSet Name="alumno_alumno_ibfk_1" Association="Self.alumno_alumno_ibfk_1">
             <End Role="acudiente" EntitySet="acudiente" />
             <End Role="alumno" EntitySet="alumno" />
@@ -709,14 +859,6 @@
             <End Role="periodo" EntitySet="periodo" />
             <End Role="clase" EntitySet="clase" />
           </AssociationSet>
-          <AssociationSet Name="clase_clase_ibfk_2" Association="Self.clase_clase_ibfk_2">
-            <End Role="materia" EntitySet="materia" />
-            <End Role="clase" EntitySet="clase" />
-          </AssociationSet>
-          <AssociationSet Name="clase_clase_ibfk_3" Association="Self.clase_clase_ibfk_3">
-            <End Role="docente" EntitySet="docente" />
-            <End Role="clase" EntitySet="clase" />
-          </AssociationSet>
           <AssociationSet Name="FK_clase_curso" Association="Self.FK_clase_curso">
             <End Role="curso" EntitySet="curso" />
             <End Role="clase" EntitySet="clase" />
@@ -729,13 +871,76 @@
             <End Role="dias" EntitySet="dias" />
             <End Role="horario" EntitySet="horario" />
           </AssociationSet>
+          <FunctionImport Name="InsertarClase">
+            <Parameter Name="ClassCapa" Mode="In" Type="Int32" />
+            <Parameter Name="Perid" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(sgaModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(sgaModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="sgaModelStoreContainer" CdmEntityContainer="sgaEntities">
+          <EntitySetMapping Name="docente_clase">
+            <EntityTypeMapping TypeName="sgaModel.docente_clase">
+              <MappingFragment StoreEntitySet="docente_clase">
+                <ScalarProperty Name="Dccl_ID" ColumnName="Dccl_ID" />
+                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
+                <ScalarProperty Name="Doc_ID" ColumnName="Doc_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="materia_clase">
+            <EntityTypeMapping TypeName="sgaModel.materia_clase">
+              <MappingFragment StoreEntitySet="materia_clase">
+                <ScalarProperty Name="Macl_ID" ColumnName="Macl_ID" />
+                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
+                <ScalarProperty Name="Mat_ID" ColumnName="Mat_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="sgaModel.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
@@ -819,8 +1024,6 @@
             <EntityTypeMapping TypeName="sgaModel.clase">
               <MappingFragment StoreEntitySet="clase">
                 <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
-                <ScalarProperty Name="Mat_ID" ColumnName="Mat_ID" />
-                <ScalarProperty Name="Doc_ID" ColumnName="Doc_ID" />
                 <ScalarProperty Name="Clas_Capa" ColumnName="Clas_Capa" />
                 <ScalarProperty Name="Curs_ID" ColumnName="Curs_ID" />
                 <ScalarProperty Name="Per_ID" ColumnName="Per_ID" />
@@ -832,7 +1035,6 @@
               <MappingFragment StoreEntitySet="curso">
                 <ScalarProperty Name="Curs_ID" ColumnName="Curs_ID" />
                 <ScalarProperty Name="Curs_Nom" ColumnName="Curs_Nom" />
-                <ScalarProperty Name="Clas_ID" ColumnName="Clas_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -889,6 +1091,31 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="InsertarClase" FunctionName="sgaModel.Store.InsertarClase" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="sgaModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="sgaModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="sgaModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="sgaModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="sgaModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="sgaModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="sgaModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="sgaModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="sgaModel.Store.sp_upgraddiagrams" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

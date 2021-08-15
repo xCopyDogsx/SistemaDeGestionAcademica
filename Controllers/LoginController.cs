@@ -51,6 +51,7 @@ namespace ProyectoFinal.Controllers
                     if (oUserStu != null)
                     {
                         Session["User"] = oUserStu;
+                        Session["ID"] = oUserStu.Alum_ID;
                         Session["Rol"] = "Estudiante";
                         Session["Nombres"] = oUserStu.Alum_Nom + " " + oUserStu.Alum_Apel;
                         Session["Correo"] = oUserStu.Alum_Email;
@@ -58,6 +59,7 @@ namespace ProyectoFinal.Controllers
                     if (oUserAd != null)
                     {
                         Session["User"] = oUserAd;
+                        Session["ID"] = oUserAd.Adm_ID;
                         Session["Rol"] = "Administrador";
                         Session["Nombres"] = oUserAd.Adm_Nom + " " + oUserAd.Adm_Apel;
                         Session["Correo"] = oUserAd.Adm_Email;
@@ -65,6 +67,7 @@ namespace ProyectoFinal.Controllers
                     if (oUserFa != null)
                     {
                         Session["User"] = oUserFa;
+                        Session["ID"] = oUserFa.Acu_ID;
                         Session["Rol"] = "Acudiente";
                         Session["Nombres"] = oUserFa.Acu_Nom + " " + oUserFa.Acu_Apel;
                         Session["Correo"] = oUserFa.Acu_Email;
@@ -72,6 +75,7 @@ namespace ProyectoFinal.Controllers
                     if (oUserTe != null)
                     {
                         Session["User"] = oUserTe;
+                        Session["ID"] = oUserTe.Doc_ID;
                         Session["Rol"] = "Docente";
                         Session["Nombres"] = oUserTe.Doc_Nom + " " + oUserTe.Doc_Apel;
                         Session["Correo"] = oUserTe.Doc_Email;

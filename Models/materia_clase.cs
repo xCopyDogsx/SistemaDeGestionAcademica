@@ -12,18 +12,13 @@ namespace ProyectoFinal.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class curso
+    public partial class materia_clase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public curso()
-        {
-            this.clase = new HashSet<clase>();
-        }
+        public long Macl_ID { get; set; }
+        public long Clas_ID { get; set; }
+        public long Mat_ID { get; set; }
     
-        public long Curs_ID { get; set; }
-        public string Curs_Nom { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<clase> clase { get; set; }
+        public virtual clase clase { get; set; }
+        public virtual materia materia { get; set; }
     }
 }

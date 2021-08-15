@@ -17,7 +17,7 @@ namespace ProyectoFinal.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public materia()
         {
-            this.clase = new HashSet<clase>();
+            this.materia_clase = new HashSet<materia_clase>();
         }
     
         public long Mat_ID { get; set; }
@@ -25,6 +25,6 @@ namespace ProyectoFinal.Models
         public string Mat_Desc { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<clase> clase { get; set; }
+        public virtual ICollection<materia_clase> materia_clase { get; set; }
     }
 }

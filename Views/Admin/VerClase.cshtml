@@ -1,43 +1,119 @@
 ﻿
 @{
-    ViewBag.Title = "Clasex";
+
+
+    ViewBag.Title = "Curso "+ ViewBag.ID;
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
 
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-calendar-check-o"></i> Periodos academicos</h1>
-            <p>Crea,elimina y edita las fechas academicas</p>
-            <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
+            <h1><i class="fa fa-calendar-check-o"></i> Administración del curso N° (ID) @ViewBag.ID</h1>
+            <p>Edita este curso de una manera didactica</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Periodos/")">Periodos academicos</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/VerClase/"+ViewBag.ID)">Clase N° (ID) @ViewBag.ID</a></li>
         </ul>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="Periodos" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre del ciclo</th>
-                                    <th>Fecha inicio</th>
-                                    <th>Fecha final</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+                    <section class="pt-5 pb-5">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <div class="row">
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                            <img class="img-fluid" alt="Clase" src="~/img/panel/Estudiantes.jpg" style="border-radius: 20px; border-style: solid; ">
+                                                            <div class="card-body">
+                                                                <h4 class="card-title">Administración de estudiantes</h4>
+                                                                <p class="card-text">Asigna y edita estudiantes para esta clase.</p>
+                                                                <hr />
+                                                                <div class="text-center">
+                                                                    <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar estudiantes</button>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                            <img class="img-fluid" alt="Clase" src="~/img/panel/Docentes.jpg" style="border-radius: 20px; border-style: solid;height:200px; ">
+                                                            <div class="card-body">
+                                                                <h4 class="card-title">Administración de docentes</h4>
+                                                                <p class="card-text">Asigna y edita docentes para esta clase.</p>
+                                                                <hr />
+                                                                <div class="text-center">
+                                                                    <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar docentes</button>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                            <img class="img-fluid" alt="Clase" src="~/img/panel/Materias.jpg" style="border-radius: 20px; border-style: solid; height: 200px; ">
+                                                            <div class="card-body">
+                                                                <h4 class="card-title">Administración de asignaturas</h4>
+                                                                <p class="card-text">Asigna y edita las asignaturas para esta clase.</p>
+                                                                <hr />
+                                                                <div class="text-center">
+                                                                    <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar asignaturas</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                            <img class="img-fluid" alt="Clase" src="~/img/panel/Notas.jpg" style="border-radius: 20px; border-style: solid; height: 200px; ">
+                                                            <div class="card-body">
+                                                                <h4 class="card-title">Administración de calificaciones</h4>
+                                                                <p class="card-text">Asigna y edita las notas para esta clase.</p>
+                                                                <hr />
+                                                                <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar calificaciones</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                            <img class="img-fluid" alt="Clase" src="~/img/panel/Horario.jpg" style="border-radius: 20px; border-style: solid; height: 200px; ">
+                                                            <div class="card-body">
+                                                                <h4 class="card-title">Ver horario</h4>
+                                                                <p class="card-text">Consulta el horario.</p>
+                                                                <hr />
+                                                                <button onclick="EstudiantesClase();" class="btn btn-primary">Ver horario</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center mb-3">
+                                                        <div class="card" style="border-radius: 20px; border-style: solid; ">
+                                                            <img class="img-fluid" alt="Clase" src="~/img/panel/Volver.png" style="border-radius: 20px; border-style: solid; height: 200px; ">
+                                                            <div class="card-body">
+                                                                <h4 class="card-title">Volver al menú</h4>
+                                                                <p class="card-text">Devuelvete a la selección de cursos.</p>
+                                                                <hr />
+                                                                <a href="@Url.Content("~/Admin/Clases")" class="btn btn-primary">Volver</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
+
     </div>
 </main>
 

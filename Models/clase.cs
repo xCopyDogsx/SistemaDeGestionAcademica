@@ -17,22 +17,24 @@ namespace ProyectoFinal.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public clase()
         {
+            this.docente_clase = new HashSet<docente_clase>();
+            this.materia_clase = new HashSet<materia_clase>();
             this.alumno_clase = new HashSet<alumno_clase>();
             this.horario = new HashSet<horario>();
         }
     
         public long Clas_ID { get; set; }
-        public long Mat_ID { get; set; }
-        public long Doc_ID { get; set; }
         public int Clas_Capa { get; set; }
         public long Curs_ID { get; set; }
         public long Per_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<docente_clase> docente_clase { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<materia_clase> materia_clase { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<alumno_clase> alumno_clase { get; set; }
         public virtual periodo periodo { get; set; }
-        public virtual materia materia { get; set; }
-        public virtual docente docente { get; set; }
         public virtual curso curso { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<horario> horario { get; set; }

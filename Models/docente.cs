@@ -17,7 +17,7 @@ namespace ProyectoFinal.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public docente()
         {
-            this.clase = new HashSet<clase>();
+            this.docente_clase = new HashSet<docente_clase>();
         }
     
         public long Doc_ID { get; set; }
@@ -31,6 +31,6 @@ namespace ProyectoFinal.Models
         public int Doc_Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<clase> clase { get; set; }
+        public virtual ICollection<docente_clase> docente_clase { get; set; }
     }
 }

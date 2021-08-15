@@ -573,13 +573,16 @@ namespace ProyectoFinal.Controllers
                                     where d.Doc_ID == id
                                     select d).FirstOrDefault();
                     var materias = (from mat in db.materia
-                                  join clas in db.clase on mat.Mat_ID equals clas.Mat_ID
-                                  join doc in db.docente on clas.Doc_ID equals doc.Doc_ID
+                                  join mat_cls in db.materia_clase on mat.Mat_ID equals mat_cls.Mat_ID
+                                  join clas in db.clase on mat_cls.Clas_ID equals clas.Clas_ID
+                                  join docente_cl in db.docente_clase on clas.Clas_ID equals docente_cl.Clas_ID
+                                  join doc in db.docente on docente_cl.Doc_ID equals doc.Doc_ID
                                   where doc.Doc_ID == id
                                   select mat.Mat_Nom).ToList();
                     var cursos = (from curs in db.curso
                                   join clas in db.clase on curs.Curs_ID equals clas.Curs_ID
-                                  join doc in db.docente on clas.Doc_ID equals doc.Doc_ID
+                                  join docente_cl in db.docente_clase on clas.Clas_ID equals docente_cl.Clas_ID
+                                  join doc in db.docente on docente_cl.Doc_ID equals doc.Doc_ID
                                   where doc.Doc_ID == id
                                   select curs.Curs_Nom).ToList();
                     if (oValidAl == null)
@@ -939,7 +942,7 @@ namespace ProyectoFinal.Controllers
                     var oValidAl = (from d in db.administrador
                                     where d.Adm_Email == correo
                                     select d.Adm_ID).FirstOrDefault();
-                    if (oValidAl != 0 || oValidAl!=null)
+                    if (oValidAl != 0)
                     {
                         return oValidAl;
                     }
@@ -1605,13 +1608,14 @@ namespace ProyectoFinal.Controllers
             }
         }
         /*--------------Administracion de cursos-----------------*/
+       
         public ActionResult Clases()
         {
             List<CarouselAdminClasesVM> lista = new List<CarouselAdminClasesVM>();
             using (sgaEntities db = new sgaEntities())
             {
                 IQueryable<CarouselAdminClasesVM> query = (from curs in db.curso
-                                                           join clas in db.clase on curs.Clas_ID equals clas.Clas_ID
+                                                           join clas in db.clase on curs.Curs_ID equals clas.Curs_ID
                                                            join per in db.periodo on clas.Per_ID equals per.Per_ID
                                                            where fecha >= per.Per_Ini && fecha <= per.Per_Fin
                                                            select new CarouselAdminClasesVM
@@ -1625,7 +1629,8 @@ namespace ProyectoFinal.Controllers
                 lista = query.ToList();
 
             }
-            ViewBag.Cursos =lista;
+            ViewBag.Cursos = lista;
+
             if (Session["User"] == null)
             {
                 HomeController home = new HomeController();
@@ -1633,6 +1638,7 @@ namespace ProyectoFinal.Controllers
             }
             else if (Session["Rol"].Equals("Adminstrador"))
             {
+               
                 return View();
             }
             else
@@ -1641,11 +1647,64 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
-       
+        
         public ActionResult VerClase(int id)
         {
             ViewBag.ID = id;
-            return View();
+                return View();
+        }
+        [HttpPost]
+        public ActionResult InsertClas(string strNombre, int capacidad,long period)
+        {
+           
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    try
+                    {
+                        var peri = (from perix in db.periodo
+                                        where perix.Per_ID == (period)
+                                        select perix).FirstOrDefault();
+                        var cursi = (from cu in db.curso
+                                     where cu.Curs_Nom.Equals(strNombre)
+                                     select cu).FirstOrDefault();
+                        if (peri!=null&&(DateTime.Now>=(peri.Per_Ini)&&DateTime.Now<=(peri.Per_Fin))&&cursi==null)
+                        {
+                        curso curs = new curso();
+                        curs.Curs_Nom = strNombre;
+                        db.curso.Add(curs);
+                        db.SaveChanges();
+                        }
+                        else
+                        {
+                            return Json(new { Success = false, msg = "El periodo no existe o probablemente no esta dentro del limite o puede que este curso ya exista" });
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.InnerException.ToString();
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
+                    }
+                }
+                using(sgaEntities bd = new sgaEntities())
+                {
+                    try
+                    {
+                        var proc = bd.InsertarClase(capacidad, period);
+                    }catch(Exception e)
+                    {
+                        e.InnerException.ToString();
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.InnerException.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Curso almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
         }
     }
 }
