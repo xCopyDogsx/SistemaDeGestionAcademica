@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Estudiantes clase " + ViewBag.ID;
+    ViewBag.Title = "Docentes clase " + ViewBag.ID;
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
 
@@ -10,17 +10,16 @@
 }
 else
 {
-
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-graduation-cap"></i> Estudiantes clase (ID) @ViewBag.ID</h1>
-                <p>Crea,elimina y edita estudiantes para la clase (ID) @ViewBag.ID</p>
-                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-link"></i> Vincular</button>
+                <h1><i class="fas fa-chalkboard-teacher"></i> Docentes</h1>
+                <p>Crea,elimina y edita docentes</p>
+                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/EstudiantesClase/"+ViewBag.ID)">Estudiantes clase @ViewBag.ID</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Docentes/")">Docentes</a></li>
             </ul>
         </div>
         <div class="row">
@@ -28,7 +27,7 @@ else
                 <div class="tile">
                     <div class="tile-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered" id="Estudiantes" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                            <table class="table table-hover table-bordered" id="Docentes" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -50,14 +49,11 @@ else
             </div>
         </div>
     </main>
-
-    
-    <!---Modal 2-->
-    <div class="modal fade" id="modalNewEst" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modalNewDoc" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
-                    <h5 class="modal-title" id="titleModal">Vincular estudiante</h5>
+                    <h5 class="modal-title" id="titleModal">Vincular docente</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -65,37 +61,35 @@ else
                 <div class="modal-body">
                     <form id="formUsuario" name="formUsuario" class="form-horizontal">
                         <p class="text-primary">Todos los campos son obligatorios.</p>
-                       
-                            <div class="form-group col-auto align-items-center">
-                                <label for="txtIdentificacion">Ingrese la identificación para vincular</label>
-                                <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
-                            </div>
-                       
+
+                        <div class="form-group col-auto align-items-center">
+                            <label for="txtIdentificacion">Ingrese la identificación para vincular</label>
+                            <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
+                        </div>
+
                         <div class="tile-footer">
                             <div class="form-group text-center">
                                 <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
                                 <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
                             </div>
-                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-
     @section scripts{
         <script>
         document.addEventListener('DOMContentLoaded', function () {
         $(document).ready(function () {
-               tableEstudiantes = $('#Estudiantes').DataTable({
+            tableDocentes = $('#Docentes').DataTable({
                     "language": {
                         "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                     },
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
-                        "url": "@Url.Content("~/Admin/JsonEstudiantesClase/"+ViewBag.ID)",
+                        "url": "@Url.Content("~/Admin/JsonDocentesClase/"+ViewBag.ID)",
                         "type": "POST",
                         "datatype": "json"
                     },
@@ -104,13 +98,13 @@ else
                     "responsivePriority": 1,
                     "data": null,
                     "columns": [
-                        { "data": "Alum_ID", "name": "Alum_ID", "autoWidth": true },
-                        { "data": "Alum_Doc", "name": "Alum_Doc", "autoWidth": true },
-                        { "data": "Alum_Nom", "name": "Alum_Nom", "autoWidth": true },
-                        { "data": "Alum_Apel", "name": "Alum_Apel", "autoWidth": true },
-                        { "data": "Alum_Tel", "name": "Alum_Tel", "autoWidth": true },
-                        { "data": "Alum_Email", "name": "Alum_Email", "autoWidth": true },
-                        { "data": "Alum_Status2", "name": "Alum_Status2", "autoWidth": true },
+                        { "data": "Doc_ID", "name": "Doc_ID", "autoWidth": true },
+                        { "data": "Doc_Doc", "name": "Doc_Doc", "autoWidth": true },
+                        { "data": "Doc_Nom", "name": "Doc_Nom", "autoWidth": true },
+                        { "data": "Doc_Apel", "name": "Doc_Apel", "autoWidth": true },
+                        { "data": "Doc_Tel", "name": "Doc_Tel", "autoWidth": true },
+                        { "data": "Doc_Email", "name": "Doc_Email", "autoWidth": true },
+                        { "data": "Doc_Status2", "name": "Doc_Status2", "autoWidth": true },
                         { "data": "Acciones", "name": "Acciones", "autoWidth": true }
                     ],
                     'dom': 'lBfrtip',
@@ -149,7 +143,7 @@ else
                     let strIdentificacion = document.querySelector('#txtIdentificacion').value;
 
 
-                    if (strIdentificacion == '') {
+                    if (strIdentificacion == '' ) {
                         swal("Atención", "Todos los campos son obligatorios.", "error");
                         return false;
                     }
@@ -162,10 +156,11 @@ else
                         }
                     }
 
-                    var data = { strIdentificacion: strIdentificacion,claseID: @ViewBag.ID};
+
+                    var data = { strIdentificacion: strIdentificacion,CursID: @ViewBag.ID};
                       $.ajax({
                             type: "POST",
-                            url: "@Url.Action("InsertEstClas", "Admin")",
+                            url: "@Url.Action("InsertDocClas", "Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: data,
@@ -177,18 +172,18 @@ else
                                         title: "Éxito al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalNewEst').modal("hide");
+                                    $('#modalNewDoc').modal("hide");
                                     formUsuario.reset();
-                                    tableEstudiantes.ajax.reload();
+                                    tableDocentes.ajax.reload();
                                 }else {
                                     swal("Error", {
                                         icon: "error",
                                         title: "Error al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalNewEst').modal("hide");
+                                    $('#modalNewDoc').modal("hide");
                                     formUsuario.reset();
-                                    tableEstudiantes.ajax.reload();
+                                    tableDocentes.ajax.reload();
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
@@ -197,23 +192,20 @@ else
                                     title: "Error al procesar la petición",
                                     text: "Por favor comunique a un administrador en caso de que el error persista.",
                                 });
-                                $('#modalNewEst').modal("hide");
+                                $('#modalNewDoc').modal("hide");
                                 formUsuario.reset();
-                                tableEstudiantes.ajax.reload();
+                                tableDocentes.ajax.reload();
                             }
                         });
                        }
                         return false;
             }
         }, false);
-            function openModal() {
-                $('#modalNewEst').modal('show');
-            }
-            function fntQuitarEst(id) {
+        function fntUnlinkDoc(id) {
             id = parseInt(id);
             var data = { id: id };
             swal({
-                title: "¿Esta seguro que desea eliminar este estudiante?",
+                title: "¿Esta seguro que desea eliminar este docente?",
                 text: "¡Una vez realizado esto no se puede deshacer!",
                 icon: "warning",
                 buttons: true,
@@ -223,7 +215,7 @@ else
                     if (willDelete) {
                         $.ajax({
                             type: "POST",
-                            url: "@Url.Action("EliminarEstClas","Admin")",
+                            url: "@Url.Action("EliminarDocClas","Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: data,
@@ -235,14 +227,14 @@ else
                                         title: "Éxito al procesar la petición",
                                         text: msg,
                                     });
-                                    tableEstudiantes.ajax.reload();
+                                    tableDocentes.ajax.reload();
                                 }else {
                                     swal("Error", {
                                         icon: "error",
                                         title: "Error al procesar la petición",
                                         text: msg,
                                     });
-                                    tableEstudiantes.ajax.reload();
+                                    tableDocentes.ajax.reload();
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
@@ -260,10 +252,16 @@ else
                         });
                     }
                 });
-        
+        }
+
+        function openModal() {
+                $('#modalNewDoc').modal('show');
             }
+
+
 
         </script>
 
-    }
+
+    }     
 }

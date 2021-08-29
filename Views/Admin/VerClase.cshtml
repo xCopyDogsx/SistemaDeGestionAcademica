@@ -50,7 +50,7 @@
                                                                 <p class="card-text">Asigna y edita docentes para esta clase.</p>
                                                                 <hr />
                                                                 <div class="text-center">
-                                                                    <button onclick="DocentesClase();" class="btn btn-primary">Administrar docentes</button>
+                                                                    <button onclick="DocentesClase(@ViewBag.ID);" class="btn btn-primary">Administrar docentes</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -121,7 +121,11 @@
         function EstudiantesClase(id) {
               var url = '@Url.Action("EstudiantesClase", "Admin", new { id = "__id__"})';
                 window.location.href = url.replace('__id__', id);
-            }
+        }
+        function DocentesClase(id) {
+              var url = '@Url.Action("DocentesClase", "Admin", new { id = "__id__"})';
+                window.location.href = url.replace('__id__', id);
+        }
     </script>
 
 }

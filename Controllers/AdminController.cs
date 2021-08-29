@@ -1958,5 +1958,37 @@ namespace ProyectoFinal.Controllers
             }
             return true;
         }
+        public ActionResult DocentesClase(int id)
+        {
+            ViewBag.ID = id;
+            bool estado = false;
+            try
+            {
+                using (sgaEntities bdx = new sgaEntities())
+                {
+
+                    var query = (from curs in bdx.curso
+                                 where curs.Curs_ID == id
+                                 select curs).FirstOrDefault();
+                    if (query != null && query.Curs_Nom != "")
+                    {
+                        estado = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return Clases();
+            }
+            if (estado == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Clases/");
+            }
+        }
     }
 }
