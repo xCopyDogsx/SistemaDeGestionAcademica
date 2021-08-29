@@ -18,6 +18,7 @@ namespace ProyectoFinal.Models
         public materia()
         {
             this.materia_clase = new HashSet<materia_clase>();
+            this.calificaciones = new HashSet<calificaciones>();
         }
     
         public long Mat_ID { get; set; }
@@ -26,5 +27,7 @@ namespace ProyectoFinal.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<materia_clase> materia_clase { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<calificaciones> calificaciones { get; set; }
     }
 }

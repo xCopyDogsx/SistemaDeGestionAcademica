@@ -306,12 +306,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SGABD.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>SGABD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>SGABD.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
@@ -399,6 +393,7 @@
     <Content Include="Views\Admin\Acudientes.cshtml" />
     <Content Include="Views\Admin\Clases.cshtml" />
     <Content Include="Views\Admin\VerClase.cshtml" />
+    <Content Include="Views\Admin\EstudiantesClase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

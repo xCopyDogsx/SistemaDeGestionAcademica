@@ -1,0 +1,340 @@
+﻿
+@{
+    ViewBag.Title = "Estudiantes clase " + ViewBag.ID;
+    Layout = "~/Views/Shared/_Paneles.cshtml";
+}
+
+@if (Session["User"] == null || !Session["Rol"].Equals("Administrador"))
+{
+    <script> window.location.href='@Url.Action("Index", "Home")'; </script>
+}
+else
+{
+
+    <main class="app-content">
+        <div class="app-title">
+            <div>
+                <h1><i class="fa fa-graduation-cap"></i> Estudiantes clase (ID) @ViewBag.ID</h1>
+                <p>Crea,elimina y edita estudiantes para la clase (ID) @ViewBag.ID</p>
+                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-link"></i> Vincular</button>
+            </div>
+            <ul class="app-breadcrumb breadcrumb">
+                <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/EstudiantesClase/"+ViewBag.ID)">Estudiantes clase @ViewBag.ID</a></li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tile">
+                    <div class="tile-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="Estudiantes" role="grid" aria-describedby="tableRoles_info" style="width: 1533px;">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Documento</th>
+                                        <th>Nombres</th>
+                                        <th>Apellidos</th>
+                                        <th>Telefono</th>
+                                        <th>Email</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!---Modal 1-->
+    <div class="modal fade" id="modalEditEst" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #007bff;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Editar estudiante</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                                <input type="hidden" id="idUsuario2" name="idUsuario2" value="">
+                                <p class="text-primary">Todos los campos son obligatorios.</p>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtIdentificacion2">Identificación</label>
+                                        <input type="text" class="form-control" id="txtIdentificacion2" name="txtIdentificacion2" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtNombre2">Nombres</label>
+                                        <input type="text" class="form-control valid validText" id="txtNombre2" name="txtNombre2" required="">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="txtApellido2">Apellidos</label>
+                                        <input type="text" class="form-control valid validText" id="txtApellido2" name="txtApellido2" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtTelefono">Teléfono</label>
+                                        <input type="text" class="form-control valid validNumber" id="txtTelefono2" name="txtTelefono2" required="" onkeypress="return controlTag(event);">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="txtEmail">Email</label>
+                                        <input type="email" class="form-control valid validEmail" id="txtEmail2" name="txtEmail2" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtAcudID">ID acudiente</label>
+                                        <input type="text" class="form-control valid validNumber" id="txtAcudID" name="txtAcudID">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="listStatus">Status</label>
+                                        <select class="form-control selectpicker" id="listStatus2" name="listStatus2" required>
+                                            <option value="1">Activo</option>
+                                            <option value="2">Inactivo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtPassword">Password</label>
+                                        <input type="password" class="form-control" id="txtPassword2" name="txtPassword2">
+                                    </div>
+                                </div>
+                                <div class="tile-footer">
+                                    <button id="btnActionForm2" onclick="sendEdit();" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---Modal 2-->
+    <div class="modal fade" id="modalNewEst" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Vincular estudiante</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formUsuario" name="formUsuario" class="form-horizontal">
+                        <p class="text-primary">Todos los campos son obligatorios.</p>
+                       
+                            <div class="form-group col-auto align-items-center">
+                                <label for="txtIdentificacion">Ingrese la identificación para vincular</label>
+                                <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
+                            </div>
+                       
+                        <div class="tile-footer">
+                            <div class="form-group text-center">
+                                <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                            </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @section scripts{
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        $(document).ready(function () {
+               tableEstudiantes = $('#Estudiantes').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "@Url.Content("~/Admin/JsonEstudiantesClase/"+ViewBag.ID)",
+                        "type": "POST",
+                        "datatype": "json"
+                    },
+                    "pageLength": 10,
+                    "filter": true,
+                    "responsivePriority": 1,
+                    "data": null,
+                    "columns": [
+                        { "data": "Alum_ID", "name": "Alum_ID", "autoWidth": true },
+                        { "data": "Alum_Doc", "name": "Alum_Doc", "autoWidth": true },
+                        { "data": "Alum_Nom", "name": "Alum_Nom", "autoWidth": true },
+                        { "data": "Alum_Apel", "name": "Alum_Apel", "autoWidth": true },
+                        { "data": "Alum_Tel", "name": "Alum_Tel", "autoWidth": true },
+                        { "data": "Alum_Email", "name": "Alum_Email", "autoWidth": true },
+                        { "data": "Alum_Status2", "name": "Alum_Status2", "autoWidth": true },
+                        { "data": "Acciones", "name": "Acciones", "autoWidth": true }
+                    ],
+                    'dom': 'lBfrtip',
+                   'buttons': [
+                        {
+                            "extend": "copyHtml5",
+                            "text": "<i class='far fa-copy'></i> Copiar",
+                            "titleAttr": "Copiar",
+                            "className": "btn btn-secondary"
+                        }, {
+                            "extend": "excelHtml5",
+                            "text": "<i class='fas fa-file-excel'></i> Excel",
+                            "titleAttr": "Exportar a Excel",
+                            "className": "btn btn-success"
+                        }, {
+                            "extend": "pdfHtml5",
+                            "text": "<i class='fas fa-file-pdf'></i> PDF",
+                            "titleAttr": "Exportar a PDF",
+                            "className": "btn btn-danger"
+                        }, {
+                            "extend": "csvHtml5",
+                            "text": "<i class='fas fa-file-csv'></i> CSV",
+                            "titleAttr": "Exportar a CSV",
+                            "className": "btn btn-info"
+                        }
+                    ],
+                    "responsieve": "true",
+                    "bDestroy": true
+                });
+        });
+/*------------Para el modal N° 1----------------------*/
+            if (document.querySelector("#formUsuario")) {
+                let formUsuario = document.querySelector("#formUsuario");
+                formUsuario.onsubmit = function (e) {
+                    e.preventDefault();
+                    let strIdentificacion = document.querySelector('#txtIdentificacion').value;
+
+
+                    if (strIdentificacion == '') {
+                        swal("Atención", "Todos los campos son obligatorios.", "error");
+                        return false;
+                    }
+
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+
+                    var data = { strIdentificacion: strIdentificacion,claseID: @ViewBag.ID};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("InsertEstClas", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewEst').modal("hide");
+                                    formUsuario.reset();
+                                    tableEstudiantes.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalNewEst').modal("hide");
+                                    formUsuario.reset();
+                                    tableEstudiantes.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalNewEst').modal("hide");
+                                formUsuario.reset();
+                                tableEstudiantes.ajax.reload();
+                            }
+                        });
+                       }
+                        return false;
+            }
+        }, false);
+            function openModal() {
+                $('#modalNewEst').modal('show');
+            }
+            function fntQuitarEst(id) {
+            id = parseInt(id);
+            var data = { id: id };
+            swal({
+                title: "¿Esta seguro que desea eliminar este estudiante?",
+                text: "¡Una vez realizado esto no se puede deshacer!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EliminarEstClas","Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tableEstudiantes.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tableEstudiantes.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+
+                            }
+                        });
+                    } else {
+                        swal("Acción cancelada", {
+                            icon: "error",
+                        });
+                    }
+                });
+        
+            }
+
+        </script>
+
+    }
+}

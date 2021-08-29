@@ -22,7 +22,7 @@ namespace ProyectoFinal.Controllers
         public int pageSize, skip, recordsTotal;
         public DateTime fecha = DateTime.Now;
         /*Variables normales*/
-        private Helpers help = new Helpers();
+        private readonly Helpers help = new Helpers();
         // GET: Admin
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -577,7 +577,7 @@ namespace ProyectoFinal.Controllers
                                   join clas in db.clase on mat_cls.Clas_ID equals clas.Clas_ID
                                   join docente_cl in db.docente_clase on clas.Clas_ID equals docente_cl.Clas_ID
                                   join doc in db.docente on docente_cl.Doc_ID equals doc.Doc_ID
-                                  where doc.Doc_ID == id
+                                  where doc.Doc_ID == id && mat_cls.Doc_ID==doc.Doc_ID
                                   select mat.Mat_Nom).ToList();
                     var cursos = (from curs in db.curso
                                   join clas in db.clase on curs.Curs_ID equals clas.Curs_ID
@@ -1647,11 +1647,38 @@ namespace ProyectoFinal.Controllers
                 return home.Index();
             }
         }
-        
         public ActionResult VerClase(int id)
         {
             ViewBag.ID = id;
+            bool estado = false;
+            try
+            {
+                using (sgaEntities bdx = new sgaEntities())
+                {
+
+                    var query = (from curs in bdx.curso
+                                 where curs.Curs_ID == id
+                                 select curs).FirstOrDefault();
+                    
+                    if (query != null&&query.Curs_Nom!="")
+                    {
+                        estado = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return Clases();
+            }
+            if (estado==true)
+              {
                 return View();
+                }
+            else
+            {
+                return RedirectToAction("Clases/");
+            }     
         }
         [HttpPost]
         public ActionResult InsertClas(string strNombre, int capacidad,long period)
@@ -1679,7 +1706,7 @@ namespace ProyectoFinal.Controllers
                         }
                         else
                         {
-                            return Json(new { Success = false, msg = "El periodo no existe o probablemente no esta dentro del limite o puede que este curso ya exista" });
+                            return Json(new { Success = false, msg = "El periodo no existe o probablemente no esta dentro del limite o puede que este curso ya exista." });
                         }
                     }
                     catch (Exception e)
@@ -1705,6 +1732,231 @@ namespace ProyectoFinal.Controllers
             {
                 return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
             }
+        }
+        [HttpPost]
+        public ActionResult ElimClas(long id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimCurs(id))
+                {
+                    return Json(new { Success = true, msg = "El curso se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        public bool ElimCurs(long id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.clase
+                                 where p.Curs_ID == id
+                                 select p).Single();
+                    db.clase.Remove(query);
+                    db.SaveChanges();
+                    var transact = (from c in db.curso
+                                    where c.Curs_ID == id
+                                    select c).Single();
+                    db.curso.Remove(transact);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public ActionResult EstudiantesClase(int id)
+        {
+            ViewBag.ID = id;
+            bool estado = false;
+            try
+            {
+                using (sgaEntities bdx = new sgaEntities())
+                {
+
+                    var query = (from curs in bdx.curso
+                                 where curs.Curs_ID == id
+                                 select curs).FirstOrDefault();
+                    if (query != null && query.Curs_Nom != "")
+                    {
+                        estado = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return Clases();
+            }
+            if (estado == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Clases/");
+            }
+        }
+        [HttpPost]
+        public ActionResult JsonEstudiantesClase(int id)
+        {
+            List<TableAdminEstudiantesVM> lst = new List<TableAdminEstudiantesVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminEstudiantesVM> query = (from Est in db.alumno
+                                                             join al_cl in db.alumno_clase on Est.Alum_ID equals al_cl.Alum_ID
+                                                             join clas in db.clase on al_cl.Clas_ID equals clas.Clas_ID
+                                                             join curs in db.curso on clas.Curs_ID equals curs.Curs_ID
+                                                             join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                             where curs.Curs_ID==id
+                                                             select new TableAdminEstudiantesVM
+                                                             {
+                                                                 Alum_ID = Est.Alum_ID,
+                                                                 Alum_Doc = Est.Alum_Doc,
+                                                                 Alum_Nom = Est.Alum_Nom,
+                                                                 Alum_Apel = Est.Alum_Apel,
+                                                                 Alum_Tel = Est.Alum_Tel,
+                                                                 Alum_Email = Est.Alum_Email,
+                                                                 Alum_Status = Est.Alum_Status
+                                                             });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Alum_Doc.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Alum_Status2") && !sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminEstudiantesVM buscador in lst)
+                {
+                    if (buscador.Alum_Status == 1)
+                    {
+                        buscador.Alum_Status2 = "<span class=\"badge badge-success\">Activo</span>";
+                    }
+                    else
+                    {
+                        buscador.Alum_Status2 = "<span class=\"badge badge-danger\">Inactivo</span>";
+                    }
+                  
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm btnElimEst\" onclick=\"fntQuitarEst(" + buscador.Alum_ID + ")\" title=\"Desvincular\"><i class=\"fas fa-unlink\" aria-hidden=\"true\"></i></button> ";
+                }
+
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });   
+        }
+        [HttpPost]
+        public ActionResult InsertEstClas(string strIdentificacion,int claseID)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    var oValid = (from d in db.alumno
+                                  where d.Alum_Doc == strIdentificacion
+                                  select d).FirstOrDefault();
+
+                    var oValidP = (from p in db.periodo
+                                   where fecha >= p.Per_Ini && fecha <= p.Per_Fin
+                                   select p).FirstOrDefault();
+                    if (oValid == null)
+                    {
+                        return Json(new { Success = false, msg = "El documento de dicho estudiante no existe, verifique por favor." });
+                    }else if (oValidP == null){
+                        return Json(new { Success = false, msg = "No se encuentra en las fechas especificas para ese periodo" });
+                    }
+                    try
+                    {
+                        alumno_clase alc = new alumno_clase();
+                        alc.Alum_ID = oValid.Alum_ID;
+                        alc.Clas_ID = claseID;
+                        alc.Per_ID = oValidP.Per_ID;
+                        db.alumno_clase.Add(alc);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Estudiante almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EliminarEstClas(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimEClas(id))
+                {
+                    return Json(new { Success = true, msg = "El estudiante se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        public bool ElimEClas(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.alumno_clase
+                                 where p.Alum_ID == id
+                                 select p).Single();
+                    db.alumno_clase.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

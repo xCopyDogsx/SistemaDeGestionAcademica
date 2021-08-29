@@ -2,7 +2,7 @@
 @{
 
 
-    ViewBag.Title = "Curso "+ ViewBag.ID;
+    ViewBag.Title = "Curso " + ViewBag.ID;
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
 
@@ -37,10 +37,10 @@
                                                                 <p class="card-text">Asigna y edita estudiantes para esta clase.</p>
                                                                 <hr />
                                                                 <div class="text-center">
-                                                                    <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar estudiantes</button>
-                                                                </div>
+                                                                    <button onclick="EstudiantesClase(@ViewBag.ID);" class="btn btn-primary">Administrar estudiantes</button>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4 text-center mb-3">
                                                         <div class="card" style="border-radius: 20px; border-style: solid; ">
@@ -50,10 +50,10 @@
                                                                 <p class="card-text">Asigna y edita docentes para esta clase.</p>
                                                                 <hr />
                                                                 <div class="text-center">
-                                                                    <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar docentes</button>
-                                                                </div>
+                                                                    <button onclick="DocentesClase();" class="btn btn-primary">Administrar docentes</button>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4 text-center mb-3">
                                                         <div class="card" style="border-radius: 20px; border-style: solid; ">
@@ -63,7 +63,7 @@
                                                                 <p class="card-text">Asigna y edita las asignaturas para esta clase.</p>
                                                                 <hr />
                                                                 <div class="text-center">
-                                                                    <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar asignaturas</button>
+                                                                    <button onclick="MateriasClase();" class="btn btn-primary">Administrar asignaturas</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -76,7 +76,7 @@
                                                                 <h4 class="card-title">Administración de calificaciones</h4>
                                                                 <p class="card-text">Asigna y edita las notas para esta clase.</p>
                                                                 <hr />
-                                                                <button onclick="EstudiantesClase();" class="btn btn-primary">Administrar calificaciones</button>
+                                                                <button onclick="CalifiClase();" class="btn btn-primary">Administrar calificaciones</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -87,7 +87,7 @@
                                                                 <h4 class="card-title">Ver horario</h4>
                                                                 <p class="card-text">Consulta el horario.</p>
                                                                 <hr />
-                                                                <button onclick="EstudiantesClase();" class="btn btn-primary">Ver horario</button>
+                                                                <button onclick="HorarioClase();" class="btn btn-primary">Ver horario</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -116,4 +116,13 @@
 
     </div>
 </main>
+@section scripts{
+    <script>
+        function EstudiantesClase(id) {
+              var url = '@Url.Action("EstudiantesClase", "Admin", new { id = "__id__"})';
+                window.location.href = url.replace('__id__', id);
+            }
+    </script>
+
+}
 

@@ -17,6 +17,7 @@ namespace ProyectoFinal.Models
         public long Macl_ID { get; set; }
         public long Clas_ID { get; set; }
         public long Mat_ID { get; set; }
+        public long Doc_ID { get; set; }
     
         public virtual clase clase { get; set; }
         public virtual materia materia { get; set; }

@@ -14,19 +14,15 @@ namespace ProyectoFinal.Models
     
     public partial class calificaciones
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public calificaciones()
-        {
-            this.alumno_clase = new HashSet<alumno_clase>();
-        }
-    
         public long Cal_ID { get; set; }
         public double Cal_N1 { get; set; }
         public double Cal_N2 { get; set; }
         public double Cal_N3 { get; set; }
         public double Cal_NF { get; set; }
+        public long Mat_ID { get; set; }
+        public long Alcl_ID { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<alumno_clase> alumno_clase { get; set; }
+        public virtual materia materia { get; set; }
+        public virtual alumno_clase alumno_clase { get; set; }
     }
 }

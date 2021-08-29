@@ -49,7 +49,7 @@ else
                                                                         <p class="card-text">Fecha de fin: @datax.Per_Fin</p>
                                                                         <hr />
                                                                         <button onclick="verCurso(@datax.Clas_ID);" class="btn btn-primary">Administrar curso</button>  
-                                                                        <button onclick="verCurso(@datax.Clas_ID);" class="btn btn-danger">Eliminar curso</button>
+                                                                        <button onclick="elimCurso(@datax.Clas_ID);" class="btn btn-danger">Eliminar curso</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -162,7 +162,6 @@ else
                                     });
                                     $('#modalNewMat').modal("hide");
                                     formUsuario.reset();
-                                   
                                     location.reload();
                                 }else {
                                     swal("Error", {
@@ -172,7 +171,7 @@ else
                                     });
                                     $('#modalNewClas').modal("hide");
                                     formUsuario.reset();
-                                   
+
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
@@ -183,14 +182,14 @@ else
                                 });
                                 $('#modalNewClas').modal("hide");
                                 formUsuario.reset();
-                                
-                               
+
+
                             }
                         });
                        }
                         return false;
             }
-        
+
         }, false);
               });
                   function openModal() {
@@ -200,12 +199,57 @@ else
               var url = '@Url.Action("VerClase", "Admin", new { id = "__id__"})';
                 window.location.href = url.replace('__id__', id);
             }
-            function sleep(milliseconds) {
-                const date = Date.now();
-                let currentDate = null;
-                do {
-                    currentDate = Date.now();
-                } while (currentDate - date < milliseconds);
+             function elimCurso(id) {
+              id = parseInt(id);
+            var data = { id: id };
+            swal({
+                title: "¿Esta seguro que desea eliminar este curso?",
+                text: "¡Una vez realizado esto no se puede deshacer!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("ElimClas", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    location.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                 
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+
+                            }
+                        });
+                    } else {
+                        swal("Acción cancelada", {
+                            icon: "error",
+                        });
+                    }
+                });
             }
 
         </script>

@@ -78,7 +78,7 @@
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Clases")"><i class="app-menu__icon fas fa-school"></i><span class="app-menu__label">Clases</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Periodos")"><i class="app-menu__icon fa fa-calendar-check-o"></i><span class="app-menu__label">Periodos academicos</span></a></li>
                 <li><a class="app-menu__item" href="@Url.Content("~/Admin/Materias")"><i class="app-menu__icon fas fa-book-reader"></i><span class="app-menu__label">Asignaturas</span></a></li>
-              
+
 
 
 
@@ -86,17 +86,17 @@
             @if (Session["Rol"].Equals("Estudiante"))
             {
 
-               
+
             }
             @if (Session["Rol"].Equals("Acudiente"))
             {
 
-               
+
             }
             @if (Session["Rol"].Equals("Docente"))
             {
 
-               
+
             }
             <li><a class="app-menu__item" href="@Url.Content("~/Panel/Salir")"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
         </ul>
@@ -118,11 +118,14 @@
     @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js")
     @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js")
     @Scripts.Render("https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js")
-
-    @if (Session["Rol"].Equals("Administrador"))
-    {
-        @Scripts.Render("~/Scripts/js/panel/functionAdmEst.js")
-    }
+    @Scripts.Render("https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js")
+    @Scripts.Render("~/Scripts/js/panel/highcharts.js")
+    @Scripts.Render("~/Scripts/js/panel/exporting.js")
+    @Scripts.Render("~/Scripts/js/panel/export-data.js")
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     @RenderSection("scripts", required: false)
 
 </body>
