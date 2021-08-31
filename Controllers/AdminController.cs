@@ -2166,8 +2166,91 @@ namespace ProyectoFinal.Controllers
             }
             return true;
         }
-        
+        public ActionResult MateriasClase(int id)
+        {
+            ViewBag.ID = id;
+            bool estado = false;
+            try
+            {
+                using (sgaEntities bdx = new sgaEntities())
+                {
 
+                    var query = (from curs in bdx.curso
+                                 where curs.Curs_ID == id
+                                 select curs).FirstOrDefault();
+                    if (query != null && query.Curs_Nom != "")
+                    {
+                        estado = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return Clases();
+            }
+            if (estado == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Clases/");
+            }
+        }
+        [HttpPost]
+        public ActionResult JsonMateriasClase(int id)
+        {
+            List<TableAdminMateriasVM> lst = new List<TableAdminMateriasVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminMateriasVM> query = (from Est in db.materia
+
+                                                          select new TableAdminMateriasVM
+                                                          {
+                                                              Mat_ID = Est.Mat_ID,
+                                                              Mat_Nom = Est.Mat_Nom,
+                                                              Mat_Desc = Est.Mat_Desc
+                                                          });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Mat_Nom.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminMateriasVM buscador in lst)
+                {
+                    buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditMat(" + buscador.Mat_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelMat(" + buscador.Mat_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                }
+
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
 
     }
 }
