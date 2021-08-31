@@ -18,6 +18,7 @@ namespace ProyectoFinal.Models
         public docente()
         {
             this.docente_clase = new HashSet<docente_clase>();
+            this.materia_clase = new HashSet<materia_clase>();
         }
     
         public long Doc_ID { get; set; }
@@ -32,5 +33,7 @@ namespace ProyectoFinal.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<docente_clase> docente_clase { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<materia_clase> materia_clase { get; set; }
     }
 }

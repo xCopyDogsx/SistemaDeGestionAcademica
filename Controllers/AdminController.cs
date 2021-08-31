@@ -1611,6 +1611,8 @@ namespace ProyectoFinal.Controllers
        
         public ActionResult Clases()
         {
+            bool edit=false;
+            ViewBag.Entra = "N";
             List<CarouselAdminClasesVM> lista = new List<CarouselAdminClasesVM>();
             using (sgaEntities db = new sgaEntities())
             {
@@ -1627,7 +1629,18 @@ namespace ProyectoFinal.Controllers
                                                                Clas_ID = clas.Clas_ID
                                                            });
                 lista = query.ToList();
+                var consulta = (from per in db.periodo
+                                where fecha >= per.Per_Ini && fecha <= per.Per_Fin
+                                select per).SingleOrDefault();
+                if (consulta != null)
+                {
+                    edit = true;
+                }
+            }
 
+            if (edit)
+            {
+                ViewBag.Entra = "S";
             }
             ViewBag.Cursos = lista;
 
@@ -1892,6 +1905,13 @@ namespace ProyectoFinal.Controllers
                     var oValidP = (from p in db.periodo
                                    where fecha >= p.Per_Ini && fecha <= p.Per_Fin
                                    select p).FirstOrDefault();
+                    var consulta = (from est in db.alumno_clase
+                                    where est.Alum_ID == oValid.Alum_ID
+                                    select est).SingleOrDefault();
+                    if (consulta != null)
+                    {
+                        return Json(new { Success = false, msg = "No se puede matricular dos veces al mismo estudiante." });
+                    }
                     if (oValid == null)
                     {
                         return Json(new { Success = false, msg = "El documento de dicho estudiante no existe, verifique por favor." });
@@ -1990,5 +2010,164 @@ namespace ProyectoFinal.Controllers
                 return RedirectToAction("Clases/");
             }
         }
+        [HttpPost]
+        public ActionResult JsonDocentesClase(int id)
+        {
+            List<TableAdminDocentesVM> lst = new List<TableAdminDocentesVM>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<TableAdminDocentesVM> query = (from Est in db.docente
+                                                          join doc_cl in db.docente_clase on Est.Doc_ID equals doc_cl.Doc_ID
+                                                          join clas in db.clase on doc_cl.Clas_ID equals clas.Clas_ID
+                                                          join curs in db.curso on clas.Curs_ID equals curs.Curs_ID
+                                                          join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                          where curs.Curs_ID == id
+                                                          select new TableAdminDocentesVM
+                                                          {
+                                                              Doc_ID = Est.Doc_ID,
+                                                              Doc_Doc = Est.Doc_Doc,
+                                                              Doc_Nom = Est.Doc_Nom,
+                                                              Doc_Apel = Est.Doc_Apel,
+                                                              Doc_Tel = Est.Doc_Tel,
+                                                              Doc_Email = Est.Doc_Email,
+                                                              Doc_Status = Est.Doc_Status
+                                                          });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Doc_Doc.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Doc_Status2") && !sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (TableAdminDocentesVM buscador in lst)
+                {
+                    if (buscador.Doc_Status == 1)
+                    {
+                        buscador.Doc_Status2 = "<span class=\"badge badge-success\">Activo</span>";
+                    }
+                    else
+                    {
+                        buscador.Doc_Status2 = "<span class=\"badge badge-danger\">Inactivo</span>";
+                    }
+                  
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntUnlinkDoc(" + buscador.Doc_ID + ")\" title=\"Desvincular\"><i class=\"fas fa-unlink\" aria-hidden=\"true\"></i></button> "; 
+                }
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+        }
+        [HttpPost]
+        public ActionResult EliminarDocClas(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimDoclas(id))
+                {
+                    return Json(new { Success = true, msg = "El docente se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        [HttpPost]
+        public ActionResult InsertDocClas(string strIdentificacion, int claseID)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    var oValid = (from d in db.docente
+                                  where d.Doc_Doc == strIdentificacion
+                                  select d).FirstOrDefault();
+
+                    var oValidP = (from p in db.periodo
+                                   where fecha >= p.Per_Ini && fecha <= p.Per_Fin
+                                   select p).FirstOrDefault();
+                    var consulta = (from est in db.docente_clase
+                                    where est.Doc_ID == oValid.Doc_ID
+                                    select est).SingleOrDefault();
+                    if (consulta != null)
+                    {
+                        return Json(new { Success = false, msg = "No se puede matricular dos veces al mismo docente." });
+                    }
+                    if (oValid == null)
+                    {
+                        return Json(new { Success = false, msg = "El documento de dicho docente no existe, verifique por favor." });
+                    }
+                    else if (oValidP == null)
+                    {
+                        return Json(new { Success = false, msg = "No se encuentra en las fechas especificas para ese periodo" });
+                    }
+                    try
+                    {
+                        docente_clase alc = new docente_clase();
+                        alc.Doc_ID = oValid.Doc_ID;
+                        alc.Clas_ID = claseID;
+                        db.docente_clase.Add(alc);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Docente almacenado con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        public bool ElimDoclas(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.docente_clase
+                                 where p.Doc_ID == id
+                                 select p).Single();
+                    db.docente_clase.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+
+
     }
 }

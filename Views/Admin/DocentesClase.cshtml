@@ -157,7 +157,7 @@ else
                     }
 
 
-                    var data = { strIdentificacion: strIdentificacion,CursID: @ViewBag.ID};
+                    var data = { strIdentificacion: strIdentificacion, claseID: @ViewBag.ID};
                       $.ajax({
                             type: "POST",
                             url: "@Url.Action("InsertDocClas", "Admin")",

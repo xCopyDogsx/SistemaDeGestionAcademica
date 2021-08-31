@@ -21,5 +21,6 @@ namespace ProyectoFinal.Models
     
         public virtual clase clase { get; set; }
         public virtual materia materia { get; set; }
+        public virtual docente docente { get; set; }
     }
 }

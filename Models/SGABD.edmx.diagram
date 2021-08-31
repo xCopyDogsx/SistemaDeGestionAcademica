@@ -34,6 +34,7 @@
         <AssociationConnector Association="sgaModel.horario_horario_ibfk_1" ManuallyRouted="false" />
         <AssociationConnector Association="sgaModel.horario_horario_ibfk_2" ManuallyRouted="false" />
         <AssociationConnector Association="sgaModel.FK_calificaciones_alumno_clase" />
+        <AssociationConnector Association="sgaModel.FK_materia_clase_docente" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

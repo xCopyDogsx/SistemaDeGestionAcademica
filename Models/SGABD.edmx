@@ -312,6 +312,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_materia_clase_docente">
+          <End Role="docente" Type="Self.docente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="materia_clase" Type="Self.materia_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="docente">
+              <PropertyRef Name="Doc_ID" />
+            </Principal>
+            <Dependent Role="materia_clase">
+              <PropertyRef Name="Doc_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_materia_clase_materia">
           <End Role="materia" Type="Self.materia" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -418,6 +432,10 @@
             <End Role="clase" EntitySet="clase" />
             <End Role="materia_clase" EntitySet="materia_clase" />
           </AssociationSet>
+          <AssociationSet Name="FK_materia_clase_docente" Association="Self.FK_materia_clase_docente">
+            <End Role="docente" EntitySet="docente" />
+            <End Role="materia_clase" EntitySet="materia_clase" />
+          </AssociationSet>
           <AssociationSet Name="FK_materia_clase_materia" Association="Self.FK_materia_clase_materia">
             <End Role="materia" EntitySet="materia" />
             <End Role="materia_clase" EntitySet="materia_clase" />
@@ -455,6 +473,7 @@
           <NavigationProperty Name="clase" Relationship="Self.FK_materia_clase_clase" FromRole="materia_clase" ToRole="clase" />
           <NavigationProperty Name="materia" Relationship="Self.FK_materia_clase_materia" FromRole="materia_clase" ToRole="materia" />
           <Property Name="Doc_ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="docente" Relationship="sgaModel.FK_materia_clase_docente" FromRole="materia_clase" ToRole="docente" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -584,6 +603,7 @@
           <Property Name="Doc_FecReg" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Doc_Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="docente_clase" Relationship="Self.FK_docente_clase_docente" FromRole="docente" ToRole="docente_clase" />
+          <NavigationProperty Name="materia_clase" Relationship="sgaModel.FK_materia_clase_docente" FromRole="docente" ToRole="materia_clase" />
         </EntityType>
         <EntityType Name="horario">
           <Key>
@@ -874,6 +894,10 @@
             <End Role="alumno_clase" EntitySet="alumno_clase" />
             <End Role="calificaciones" EntitySet="calificaciones" />
           </AssociationSet>
+          <AssociationSet Name="FK_materia_clase_docente" Association="sgaModel.FK_materia_clase_docente">
+            <End Role="docente" EntitySet="docente" />
+            <End Role="materia_clase" EntitySet="materia_clase" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_calificaciones_alumno_clase">
           <End Type="sgaModel.alumno_clase" Role="alumno_clase" Multiplicity="1">
@@ -886,6 +910,20 @@
             </Principal>
             <Dependent Role="calificaciones">
               <PropertyRef Name="Alcl_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materia_clase_docente">
+          <End Type="sgaModel.docente" Role="docente" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="sgaModel.materia_clase" Role="materia_clase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="docente">
+              <PropertyRef Name="Doc_ID" />
+            </Principal>
+            <Dependent Role="materia_clase">
+              <PropertyRef Name="Doc_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
