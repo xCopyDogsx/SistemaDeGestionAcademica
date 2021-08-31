@@ -3,9 +3,6 @@
     ViewBag.Title = "Materias clase " + ViewBag.ID;
     Layout = "~/Views/Shared/_Paneles.cshtml";
 }
-
-<h2>MateriasClase</h2>
-
 @if (Session["User"] == null || !Session["Rol"].Equals("Administrador"))
 {
     <script> window.location.href='@Url.Action("Index", "Home")'; </script>
@@ -15,13 +12,13 @@ else
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fas fa-book"></i> Materias</h1>
+                <h1><i class="fas fa-book"></i> Materias clase (ID) @ViewBag.ID</h1>
                 <p>Crea,elimina y edita asignaturas</p>
-                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus-circle"></i> Nuevo</button>
+                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-link"></i> Vincular</button>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fas fa-home"></i></li>
-                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/Materias/")">Materias</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Content("~/Admin/MateriasClase/"+ViewBag.ID)">Materias clase (ID) @ViewBag.ID</a></li>
             </ul>
         </div>
         <div class="row">
@@ -96,7 +93,7 @@ else
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
-                        "url": "@Url.Content("~/Admin/JsonMateriasClase"+ViewBag.ID)",
+                        "url": "@Url.Content("~/Admin/JsonMateriasClase/"+ViewBag.ID)",
                         "type": "POST",
                         "datatype": "json"
                     },

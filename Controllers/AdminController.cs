@@ -2216,7 +2216,11 @@ namespace ProyectoFinal.Controllers
             using (sgaEntities db = new sgaEntities())
             {
                 IQueryable<TableAdminMateriasVM> query = (from Est in db.materia
-
+                                                          join mat_cl in db.materia_clase on Est.Mat_ID equals mat_cl.Mat_ID
+                                                          join clas in db.clase on mat_cl.Clas_ID equals clas.Clas_ID
+                                                          join curs in db.curso on clas.Curs_ID equals curs.Curs_ID
+                                                          join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                          where curs.Curs_ID == id
                                                           select new TableAdminMateriasVM
                                                           {
                                                               Mat_ID = Est.Mat_ID,
@@ -2244,8 +2248,9 @@ namespace ProyectoFinal.Controllers
                 }
                 foreach (TableAdminMateriasVM buscador in lst)
                 {
-                    buscador.Acciones = "<button class=\"btn btn-primary btn-sm \" onclick=\"fntEditMat(" + buscador.Mat_ID + ")\" title=\"Editar\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i></button> ";
-                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntDelMat(" + buscador.Mat_ID + ")\" title=\"Eliminar\"><i class=\"far fa-trash-alt\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones = "<button class=\"btn btn-success btn-sm \" onclick=\"fntEditDoc(" + buscador.Mat_ID + ")\" title=\"Asignar docente\"><i class=\"fas fa-user-edit\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-primary btn-sm \" onclick=\"fntDocMat(" + buscador.Mat_ID + ")\" title=\"Ver docente a cargo\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntUnlinkMat(" + buscador.Mat_ID + ")\" title=\"Desvincular\"><i class=\"fas fa-unlink\" aria-hidden=\"true\"></i></button> ";
                 }
 
             }
