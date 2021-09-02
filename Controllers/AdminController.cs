@@ -2256,6 +2256,79 @@ namespace ProyectoFinal.Controllers
             }
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
         }
+        [HttpPost]
+        public ActionResult SelMatX(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+
+                    var oValidAl = (from d in db.materia_clase
+                                    where d.Mat_ID == id
+                                    select d).FirstOrDefault();
+                    var oValidx = (from d in db.docente
+                                   join mat in db.materia_clase on d.Doc_ID equals mat.Doc_ID
+                                   select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idpersona = oValidAl.Mat_ID,
+                        docente = oValidx.Doc_Doc
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditDocMat(long strIdentificacion,long id,long curso)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    try
+                    {
+                        var ValidDoc = (from d in db.docente
+                                        where d.Doc_Doc==strIdentificacion.ToString()
+                                        select d).FirstOrDefault();
+                        var EstaClase = (from d in db.docente_clase
+                                         join doc in db.docente on d.Doc_ID equals doc.Doc_ID
+                                         where d.Clas_ID == curso && doc.Doc_Doc == strIdentificacion.ToString()
+                                         select d).FirstOrDefault();
+                        if (EstaClase == null) { return Json(new { Success = false, msg = "Ese docente no esta asignado al curso" }); }
+                        if(ValidDoc==null){return Json(new { Success = false, msg = "Ese docente no existe" }); }
+                        var Repetido = (from d in db.materia_clase
+                                        where d.Mat_ID != id && d.Clas_ID == curso && d.Doc_ID == ValidDoc.Doc_ID
+                                        select d).FirstOrDefault();
+                        if(Repetido!=null) { return Json(new { Success = false, msg = "Ese docente ya esta asignado a esta materia" }); }
+                        var std = (from d in db.materia_clase
+                                   where d.Clas_ID == curso && d.Mat_ID == id
+                                   select d).FirstOrDefault();
+                        if (std == null) { return Json(new { Success = false, msg = "Error durante la consulta" }); }
+                        std.Doc_ID = ValidDoc.Doc_ID;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Asignatura actualizada con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
 
     }
 }

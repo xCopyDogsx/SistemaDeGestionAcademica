@@ -46,7 +46,7 @@ else
     </main>
     <!---Modal 1-->
     <div class="modal fade" id="modalNewMat" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog  modal-md">
             <div class="modal-content">
                 <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
                     <h5 class="modal-title" id="titleModal">Materia nueva</h5>
@@ -60,19 +60,16 @@ else
                             <form id="formUsuario" name="formUsuario" class="form-horizontal">
                                 <input type="hidden" id="idUsuario" name="idUsuario2" value="">
                                 <p class="text-primary">Todos los campos son obligatorios.</p>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="txtNombreMateriax">Nombre de la materia</label>
-                                        <input type="text" class="form-control" id="txtNombreMateriax" name="txtNombreMateriax" required="">
-                                    </div>
+                                <div class="form-group col-auto align-items-center">
+                                    <label for="txtIdentificacion">Ingrese el ID de la materia a vincular</label>
+                                    <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
                                 </div>
-                                <div class="form-row">
-                                    <label for="descripcion">Descripción</label>
-                                    <textarea id="descripcionx" class="form-control" rows="4" name="descripcionx" required=""></textarea>
-                                </div>
+
                                 <div class="tile-footer">
-                                    <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
-                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                    <div class="form-group text-center">
+                                        <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -81,7 +78,39 @@ else
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog  modal-md">
+            <div class="modal-content">
+                <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                    <h5 class="modal-title" id="titleModal">Reasignar docente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                                <input type="hidden" id="idUsuario2" name="idUsuario2" value="">
+                                <p class="text-primary">Todos los campos son obligatorios.</p>
+                                <div class="form-group col-auto align-items-center">
+                                    <label for="txtIdentificacion2">Ingrese la identificación del docente</label>
+                                    <input type="text" class="form-control" id="txtIdentificacion2" name="txtIdentificacion2" required="">
+                                </div>
 
+                                <div class="tile-footer">
+                                    <div class="form-group text-center">
+                                        <button id="btnActionForm2" onClick="fntEditDocX()" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @section scripts{
         <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -203,6 +232,97 @@ else
                         return false;
             }
         }, false);
+            function openModal() {
+                $('#modalNewMat').modal('show');
+            }
+            function fntEditDoc(id) {
+                  var data = { id: id };
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelMatX","Admin")",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: data,
+                success: function (d) {
+                    var msg = d.msg;
+                    if (d.Success == true) {
+                        document.querySelector("#idUsuario2").value = d.idpersona;
+                        document.querySelector("#txtIdentificacion2").value = d.docente;
+                        $('#modalEdit').modal('show');
+                    } else {
+                        swal("Error", {
+                            icon: "error",
+                            title: "Error al procesar la petición",
+                            text: msg,
+                        });
+                        tableMaterias.ajax.reload();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    swal("Error", {
+                        icon: "error",
+                        title: "Error al procesar la petición",
+                        text: "Por favor comunique a un administrador en caso de que el error persista.",
+                    });
+
+                }
+            });
+            }
+            function fntEditDocX() {
+              
+                let id = document.querySelector('#idUsuario2').value;
+                let strIdentificacion = document.querySelector('#txtIdentificacion2').value;
+                if (strIdentificacion == ""||id=="") {
+                    swal("Atención", "Todos los campos son obligatorios.", "error");
+                    return false;
+                }
+                var data = { strIdentificacion: strIdentificacion,id:id,curso:@ViewBag.ID};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EditDocMat", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEdit').modal("hide");
+                                    formUsuario.reset();
+                                    tableMaterias.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEdit').modal("hide");
+                                   
+                                    tableMaterias.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalEdit').modal("hide");
+                              
+                                tableMaterias.ajax.reload();
+                            }
+                        });
+            }
+            function fntDocMat(id) {
+
+            }
+            function fntUnlinkMat(id) {
+
+            }
         </script>
     }
 }
