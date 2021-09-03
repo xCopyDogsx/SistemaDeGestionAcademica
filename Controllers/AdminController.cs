@@ -1628,6 +1628,7 @@ namespace ProyectoFinal.Controllers
                                                                Per_Fin = per.Per_Fin,
                                                                Clas_ID = clas.Clas_ID
                                                            });
+                
                 lista = query.ToList();
                 var consulta = (from per in db.periodo
                                 where fecha >= per.Per_Ini && fecha <= per.Per_Fin
@@ -1798,10 +1799,19 @@ namespace ProyectoFinal.Controllers
             {
                 using (sgaEntities bdx = new sgaEntities())
                 {
-
+                    var consul = (from alc in bdx.alumno_clase
+                                  where alc.Clas_ID == id
+                                  select alc).Count();
+                    var capa = (from xd in bdx.clase
+                                where xd.Curs_ID == id
+                                select xd).FirstOrDefault();
                     var query = (from curs in bdx.curso
                                  where curs.Curs_ID == id
                                  select curs).FirstOrDefault();
+                    if (capa.Clas_Capa == consul)
+                    {
+                        ViewBag.Entra = "N";
+                    }
                     if (query != null && query.Curs_Nom != "")
                     {
                         estado = true;
@@ -2249,7 +2259,7 @@ namespace ProyectoFinal.Controllers
                 foreach (TableAdminMateriasVM buscador in lst)
                 {
                     buscador.Acciones = "<button class=\"btn btn-success btn-sm \" onclick=\"fntEditDoc(" + buscador.Mat_ID + ")\" title=\"Asignar docente\"><i class=\"fas fa-user-edit\" aria-hidden=\"true\"></i></button> ";
-                    buscador.Acciones += "<button class=\"btn btn-primary btn-sm \" onclick=\"fntDocMat(" + buscador.Mat_ID + ")\" title=\"Ver docente a cargo\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
+                    buscador.Acciones += "<button class=\"btn btn-primary btn-sm \" onclick=\"fntDocMat(" + buscador.Mat_ID +","+ id + ")\" title=\"Ver docente a cargo\"><i class=\"fas fa-eye\" aria-hidden=\"true\"></i></button> ";
                     buscador.Acciones += "<button class=\"btn btn-danger btn-sm \" onclick=\"fntUnlinkMat(" + buscador.Mat_ID + ")\" title=\"Desvincular\"><i class=\"fas fa-unlink\" aria-hidden=\"true\"></i></button> ";
                 }
 
@@ -2323,6 +2333,153 @@ namespace ProyectoFinal.Controllers
                     }
                 }
                 return Json(new { Success = true, msg = "Asignatura actualizada con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EliminarMatClas(int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                if (id < 0)
+                {
+                    return Json(new { Success = false, msg = "Por favor revise el ID a eliminar" });
+                }
+                if (ElimMaclas(id))
+                {
+                    return Json(new { Success = true, msg = "El docente se ha eliminado con éxito" });
+                }
+                else
+                {
+                    return Json(new { Success = false, msg = "No se pudo eliminar" });
+                }
+            }
+            return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+        }
+        public bool ElimMaclas(int id)
+        {
+            using (sgaEntities db = new sgaEntities())
+            {
+                try
+                {
+                    var query = (from p in db.materia_clase
+                                 where p.Mat_ID == id
+                                 select p).Single();
+                    db.materia_clase.Remove(query);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        [HttpPost]
+        public ActionResult ConsulDoceMat(int id,int curso)
+        {
+            using(sgaEntities db = new sgaEntities())
+            {
+                var query = (from d in db.docente
+                             join doc_cl in db.docente_clase on d.Doc_ID equals doc_cl.Doc_ID
+                             join mat_cl in db.materia_clase on doc_cl.Doc_ID equals mat_cl.Doc_ID
+                             where mat_cl.Clas_ID == curso && mat_cl.Mat_ID == id
+                             select d).FirstOrDefault();
+                if (query == null)
+                {
+                    return Json(new { Success = false, msg = "Docente sin asignar" });
+                }
+                return Json(new { Success = true, msg = "Nombres y apellidos: "+query.Doc_Nom+" "+query.Doc_Apel+" Doc. de Identidad: "+query.Doc_Doc });
+            }
+           
+        }
+        [HttpPost]
+        public ActionResult InsertMatClas(int docente,int materia,int curso)
+        {
+
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    var oValid = (from d in db.materia
+                                  where d.Mat_ID==materia
+                                  select d).FirstOrDefault();
+
+                    var oValidP = (from p in db.periodo
+                                   where fecha >= p.Per_Ini && fecha <= p.Per_Fin
+                                   select p).FirstOrDefault();
+                  
+                    var xd = (from doc in db.docente
+                              where doc.Doc_Doc == docente.ToString()
+                              select doc).FirstOrDefault();
+                    if (xd == null) return Json(new { Success = false, msg = "El docente no existe." });
+                    var consulta = (from mat in db.materia_clase
+                                    where mat.Mat_ID == materia || mat.Doc_ID == xd.Doc_ID && mat.Clas_ID == curso
+                                    select mat).SingleOrDefault();
+                    if (consulta != null)
+                    {
+                        return Json(new { Success = false, msg = "No se puede matricular dos veces la misma asignatura o ya ese docente esta asignado." });
+                    }
+                    if (oValid == null)
+                    {
+                        return Json(new { Success = false, msg = "La asignatura no existe." });
+                    }
+                    else if (oValidP == null)
+                    {
+                        return Json(new { Success = false, msg = "No se encuentra en las fechas especificas para ese periodo" });
+                    }
+                    try
+                    {
+                        materia_clase alc = new materia_clase();
+                        alc.Clas_ID = curso;
+                        alc.Doc_ID = xd.Doc_ID;
+                        alc.Mat_ID = oValid.Mat_ID;
+                        db.materia_clase.Add(alc);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo ingresar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Asignatura almacenada con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditCapa(int capa,int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    try
+                    {
+                        var Valid = (from d in db.clase
+                                        where d.Curs_ID == id
+                                        select d).FirstOrDefault();
+                       
+                        if (Valid == null) { return Json(new { Success = false, msg = "Dicho curso no existe" }); }
+                        
+                        var std = (from d in db.clase
+                                   where d.Clas_ID == id 
+                                   select d).FirstOrDefault();
+                        if (std == null) { return Json(new { Success = false, msg = "Error durante la consulta" }); }
+                        std.Clas_Capa = capa;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Capacidad actualizada con éxito. " });
             }
             else
             {

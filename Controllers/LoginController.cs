@@ -90,5 +90,9 @@ namespace ProyectoFinal.Controllers
             }
 
         }
+        public ActionResult Olvido()
+        {
+            return View();
+        }
     }
 }

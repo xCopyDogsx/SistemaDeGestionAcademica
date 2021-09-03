@@ -64,7 +64,10 @@ else
                                     <label for="txtIdentificacion">Ingrese el ID de la materia a vincular</label>
                                     <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" required="">
                                 </div>
-
+                                <div class="form-group col-auto align-items-center">
+                                    <label for="txtDocente">Ingrese el documento de identidad del docente que dictará la asignatura </label>
+                                    <input type="text" class="form-control" id="txtDocente" name="txtDocente" required="">
+                                </div>
                                 <div class="tile-footer">
                                     <div class="form-group text-center">
                                         <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
@@ -170,11 +173,11 @@ else
                 formUsuario.onsubmit = function (e) {
                     e.preventDefault();
 
-                    let strNombre = document.querySelector('#txtNombreMateriax').value;
-                    let descripcion = document.querySelector('#descripcionx').value;
+                    let docente = document.querySelector('#txtDocente').value;
+                    let materia = document.querySelector('#txtIdentificacion').value;
 
 
-                    if (strNombre==''||descripcion=='') {
+                    if (docente==''||materia=='') {
                         swal("Atención", "Todos los campos son obligatorios.", "error");
                         return false;
                     }
@@ -188,10 +191,10 @@ else
                     }
 
 
-                    var data = { strNombre: strNombre,descripcion:descripcion};
+                    var data = { docente: docente,materia:materia,curso:@ViewBag.ID};
                       $.ajax({
                             type: "POST",
-                            url: "@Url.Action("InsertMat", "Admin")",
+                            url: "@Url.Action("InsertMatClas", "Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: data,
@@ -269,7 +272,7 @@ else
             });
             }
             function fntEditDocX() {
-              
+
                 let id = document.querySelector('#idUsuario2').value;
                 let strIdentificacion = document.querySelector('#txtIdentificacion2').value;
                 if (strIdentificacion == ""||id=="") {
@@ -301,7 +304,7 @@ else
                                         text: msg,
                                     });
                                     $('#modalEdit').modal("hide");
-                                   
+
                                     tableMaterias.ajax.reload();
                                 }
                             },
@@ -312,16 +315,96 @@ else
                                     text: "Por favor comunique a un administrador en caso de que el error persista.",
                                 });
                                 $('#modalEdit').modal("hide");
-                              
+
                                 tableMaterias.ajax.reload();
                             }
                         });
             }
-            function fntDocMat(id) {
+            function fntDocMat(id,curso) {
+                   var datax = { id: id, curso:curso};
+                    $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("ConsulDoceMat","Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: datax,
+                            success: function (de) {
+                                var msg = de.msg;
+                                if (de.Success == true) {
+                                    swal("El docente asignado es: ", msg);
+                                 
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                   
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+
+                            }
+                        });
+                   
 
             }
             function fntUnlinkMat(id) {
+                 id = parseInt(id);
+            var data = { id: id };
+            swal({
+                title: "¿Esta seguro que desea eliminar esta asignatura?",
+                text: "¡Una vez realizado esto no se puede deshacer!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EliminarMatClas","Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tableMaterias.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    tableMaterias.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
 
+                            }
+                        });
+                    } else {
+                        swal("Acción cancelada", {
+                            icon: "error",
+                        });
+                    }
+                });
             }
         </script>
     }

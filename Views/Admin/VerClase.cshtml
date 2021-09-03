@@ -11,6 +11,7 @@
         <div>
             <h1><i class="fa fa-calendar-check-o"></i> Administración del curso N° (ID) @ViewBag.ID</h1>
             <p>Edita este curso de una manera didactica</p>
+            <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-wrench"></i> Editar capacidad</button>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -116,6 +117,41 @@
 
     </div>
 </main>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog  modal-md">
+        <div class="modal-content">
+            <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                <h5 class="modal-title" id="titleModal">Reasignar capacidad</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tile">
+                    <div class="tile-body">
+                        <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                            
+                            <p class="text-primary">Todos los campos son obligatorios.</p>
+                            <div class="form-group col-auto align-items-center">
+                                <label for="txtCapa">Ingrese la nueva capacidad del curso</label>
+                                <input type="number" class="form-control" id="txtCapa" name="txtCapa" required="">
+                            </div>
+
+                            <div class="tile-footer">
+                                <div class="form-group text-center">
+                                    <button id="btnActionForm2" onClick="fntEditCapa()" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts{
     <script>
         function EstudiantesClase(id) {
@@ -129,6 +165,51 @@
         function MateriasClase(id) {
             var url = '@Url.Action("MateriasClase", "Admin", new { id = "__id__"})';
                 window.location.href = url.replace('__id__', id);
+        }
+        function openModal() {
+            $('#modalEdit').modal('show');
+        }
+        function fntEditCapa() {
+            let capa = document.querySelector('#txtCapa').value;
+             
+                if (capa == ""||capa<0||capa<3) {
+                    swal("Atención", "Todos los campos son obligatorios, además la capacidad debe ser mayor a 3.", "error");
+                    return false;
+                }
+                var data = {capa:capa,id:@ViewBag.ID};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EditCapa", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEdit').modal("hide");    
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEdit').modal("hide");                      
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalEdit').modal("hide");           
+                            }
+                        });
         }
     </script>
 

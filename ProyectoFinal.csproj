@@ -396,6 +396,7 @@
     <Content Include="Views\Admin\EstudiantesClase.cshtml" />
     <Content Include="Views\Admin\DocentesClase.cshtml" />
     <Content Include="Views\Admin\MateriasClase.cshtml" />
+    <Content Include="Views\Login\Olvido.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

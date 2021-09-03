@@ -16,7 +16,16 @@ else
             <div>
                 <h1><i class="fa fa-graduation-cap"></i> Estudiantes clase (ID) @ViewBag.ID</h1>
                 <p>Crea,elimina y edita estudiantes para la clase (ID) @ViewBag.ID</p>
-                <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-link"></i> Vincular</button>
+
+                @if (ViewContext.Controller.ViewBag.Entra != "N")
+                {
+            <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-link"></i> Vincular</button>
+                }
+                else { 
+            <div class="alert alert-danger" role="alert">
+                Este curso esta lleno, por favor elimine o edite estudiantes.
+            </div>
+                }    
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
