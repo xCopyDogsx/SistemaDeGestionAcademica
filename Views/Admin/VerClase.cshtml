@@ -12,6 +12,7 @@
             <h1><i class="fa fa-calendar-check-o"></i> Administración del curso N° (ID) @ViewBag.ID</h1>
             <p>Edita este curso de una manera didactica</p>
             <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fas fa-wrench"></i> Editar capacidad</button>
+            <button class="btn btn-warning" type="button" onclick="openModal2();"><i class="fas fa-file-signature"></i> Cambiar nombre</button>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -151,6 +152,73 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalEdit2" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog  modal-md">
+        <div class="modal-content">
+            <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                <h5 class="modal-title" id="titleModal">Reasignar nombre al curso</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tile">
+                    <div class="tile-body">
+                        <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+
+                            <p class="text-primary">Todos los campos son obligatorios.</p>
+                            <div class="form-group col-auto align-items-center">
+                                <label for="txtNombre">Ingrese el nuevo nombre del curso</label>
+                                <input type="text" class="form-control" id="txtNombre" name="txtNombre" required="">
+                            </div>
+
+                            <div class="tile-footer">
+                                <div class="form-group text-center">
+                                    <button id="btnActionForm2" onClick="fntEditName()" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalNotas" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog  modal-md">
+        <div class="modal-content">
+            <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
+                <h5 class="modal-title" id="titleModal">Consultar notas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tile">
+                    <div class="tile-body">
+                        <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+
+                            <p class="text-primary">Todos los campos son obligatorios.</p>
+                            <div class="form-group col-auto align-items-center">
+                                <label for="txtDoc">Ingrese el documento de identidad del alumno a editar las notas</label>
+                                <input type="text" class="form-control" id="txtDoc" name="txtDoc" required="">
+                            </div>
+
+                            <div class="tile-footer">
+                                <div class="form-group text-center">
+                                    <button id="btnActionForm2" onClick="fntEditNotas()" class="btn btn-primary" type="button"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section scripts{
     <script>
@@ -171,7 +239,7 @@
         }
         function fntEditCapa() {
             let capa = document.querySelector('#txtCapa').value;
-             
+
                 if (capa == ""||capa<0||capa<3) {
                     swal("Atención", "Todos los campos son obligatorios, además la capacidad debe ser mayor a 3.", "error");
                     return false;
@@ -191,14 +259,14 @@
                                         title: "Éxito al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalEdit').modal("hide");    
+                                    $('#modalEdit').modal("hide");
                                 }else {
                                     swal("Error", {
                                         icon: "error",
                                         title: "Error al procesar la petición",
                                         text: msg,
                                     });
-                                    $('#modalEdit').modal("hide");                      
+                                    $('#modalEdit').modal("hide");
                                 }
                             },
                             error: function (xhr, textStatus, errorThrown) {
@@ -207,9 +275,73 @@
                                     title: "Error al procesar la petición",
                                     text: "Por favor comunique a un administrador en caso de que el error persista.",
                                 });
-                                $('#modalEdit').modal("hide");           
+                                $('#modalEdit').modal("hide");
                             }
                         });
+        }
+        function openModal2() {
+            $('#modalEdit2').modal('show');
+        }
+        function fntEditName() {
+            let name = document.querySelector('#txtNombre').value;
+
+                if (name == "") {
+                    swal("Atención", "Todos los campos son obligatorios, además la capacidad debe ser mayor a 3.", "error");
+                    return false;
+                }
+                var data = {name:name,id:@ViewBag.ID};
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EditNombre", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: data,
+                            success: function (d) {
+                                var msg = d.msg;
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEdit2').modal("hide");
+                                    window.location.href='@Url.Action("Clases", "Admin")';
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEdit2').modal("hide");
+                                    window.location.href='@Url.Action("Clases", "Admin")';
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.",
+                                });
+                                $('#modalEdit2').modal("hide");
+                                window.location.href='@Url.Action("Clases", "Admin")';
+                            }
+                        });
+        }
+        function CalifiClase() {
+            $('#modalNotas').modal('show');
+        }
+        function fntEditNotas() {
+            let id = document.querySelector('#txtDoc').value;           
+            if (id == "") {
+                swal("Atención", "Todos los campos son obligatorios, además la capacidad debe ser mayor a 3.", "error");
+                return false;
+            }
+            pasarNotas(id);
+            return false;
+        }
+        function pasarNotas(id) {
+             var url = '@Url.Action("NotasAlumno", "Admin", new {curso=ViewBag.ID, id = "__id__"})';
+                window.location.href = url.replace('__id__', id);
         }
     </script>
 

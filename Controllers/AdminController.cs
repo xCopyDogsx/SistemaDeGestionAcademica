@@ -5,8 +5,6 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.ViewModels;
 using System.Linq.Dynamic;
-using System.Web.UI;
-using System.Diagnostics;
 
 namespace ProyectoFinal.Controllers
 {
@@ -2485,6 +2483,136 @@ namespace ProyectoFinal.Controllers
             {
                 return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
             }
+        }
+        [HttpPost]
+        public ActionResult EditNombre(string name,int id)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    try
+                    {
+                        var Valid = (from d in db.clase
+                                     where d.Curs_ID == id
+                                     select d).FirstOrDefault();
+
+                        if (Valid == null) { return Json(new { Success = false, msg = "Dicho curso no existe" }); }
+
+                        var std = (from d in db.curso
+                                   where d.Curs_ID == id
+                                   select d).FirstOrDefault();
+                        if (std == null) { return Json(new { Success = false, msg = "Error durante la consulta" }); }
+                        std.Curs_Nom = name;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Capacidad actualizada con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        public ActionResult NotasAlumno(int curso,int id)
+        {
+            ViewBag.ID = id;
+            ViewBag.Curso = curso;
+            bool estado = false;
+            try
+            {
+                using (sgaEntities bdx = new sgaEntities())
+                {
+
+                    var query = (from curs in bdx.curso
+                                 where curs.Curs_ID == curso
+                                 select curs).FirstOrDefault();
+                    var query2 = (from al in bdx.alumno
+                                  where al.Alum_Doc == id.ToString()
+                                  select al).FirstOrDefault();
+                    if (query != null && query.Curs_Nom != ""&&query2!=null&&query2.Alum_Nom!="")
+                    {
+                        estado = true;
+                    }
+                   
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return Clases();
+            }
+            if (estado == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Clases/");
+            }
+        }
+        [HttpPost]
+        public ActionResult JsonNotasEstudiante(int id,int curso)
+        {
+            List<ModificaNotasAdmin> lst = new List<ModificaNotasAdmin>();
+            //logistica datatable
+            var draw = Request.Form.GetValues("draw").FirstOrDefault();
+            var start = Request.Form.GetValues("start").FirstOrDefault();
+            var length = Request.Form.GetValues("length").FirstOrDefault();
+            var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+            var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+            var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+            pageSize = length != null ? Convert.ToInt32(length) : 0;
+            skip = start != null ? Convert.ToInt32(start) : 0;
+            recordsTotal = 0;
+            //Conexion con la base de datos
+            using (sgaEntities db = new sgaEntities())
+            {
+                IQueryable<ModificaNotasAdmin> query = (from cal in db.calificaciones
+                                                         join alc in db.alumno_clase on cal.Alcl_ID equals alc.Alcl_ID
+                                                         join clas in db.clase on alc.Clas_ID equals clas.Clas_ID
+                                                         join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                         join mat in db.materia on cal.Mat_ID equals mat.Mat_ID
+                                                         where fecha >= per.Per_Ini && fecha <= per.Per_Fin && clas.Curs_ID==curso
+                                                        select new ModificaNotasAdmin
+                                                          {
+                                                              Mat_ID = mat.Mat_ID,
+                                                              Mat_Nom = mat.Mat_Nom,
+                                                              Cal_N1 = cal.Cal_N1,
+                                                              Cal_N2 = cal.Cal_N2,
+                                                              Cal_N3 = cal.Cal_N3,
+                                                              Cal_NF = cal.Cal_NF
+                                                          });
+                if (searchValue != "")
+                    query = query.Where(Est => Est.Mat_Nom.Contains(searchValue));
+                //Sorting    
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+                if (!sortColumn.Equals("Acciones"))
+                {
+                    recordsTotal = query.Count();
+                }
+                else
+                {
+                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                }
+                if (recordsTotal != 0)
+                {
+                    lst = query.Skip(skip).Take(pageSize).ToList();
+                }
+                foreach (ModificaNotasAdmin buscador in lst)
+                {
+                    buscador.Acciones = "<button class=\"btn btn-info btn-sm \" onclick=\"fntEditNot(" + buscador.Mat_ID + ")\" title=\"Editar notas\"><i class=\"fas fa-tools\" aria-hidden=\"true\"></i></button> "; 
+                }
+
+            }
+            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
         }
 
     }

@@ -310,6 +310,7 @@
       <DependentUpon>SGABD.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\CarouselAdminClasesVM.cs" />
+    <Compile Include="Models\ViewModels\ModificaNotasAdmin.cs" />
     <Compile Include="Models\ViewModels\TableAdminAcudientesVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminAdministradoresVM.cs" />
     <Compile Include="Models\ViewModels\TableAdminDocentesVM.cs" />
@@ -397,6 +398,7 @@
     <Content Include="Views\Admin\DocentesClase.cshtml" />
     <Content Include="Views\Admin\MateriasClase.cshtml" />
     <Content Include="Views\Login\Olvido.cshtml" />
+    <Content Include="Views\Admin\NotasAlumno.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
