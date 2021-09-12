@@ -18,11 +18,12 @@ namespace ProyectoFinal.Filters
         private acudiente oUserFa;
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {   
-            try
+            /*try
             {
                 base.OnActionExecuting(filterContext);
-                oUserTe = (docente)HttpContext.Current.Session["User"];
                 oUserAdmin = (administrador)HttpContext.Current.Session["User"];
+                oUserTe = (docente)HttpContext.Current.Session["User"];
+               
                 oUserStu = (alumno)HttpContext.Current.Session["User"];
                 oUserFa = (acudiente)HttpContext.Current.Session["User"];
                 if (oUserTe == null && oUserStu == null && oUserAdmin == null && oUserFa==null)
@@ -41,7 +42,7 @@ namespace ProyectoFinal.Filters
             catch (Exception)
             {
                // filterContext.Result = new RedirectResult("~/Login/SGA");
-            }
+            }*/
         }
 
     }

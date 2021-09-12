@@ -49,11 +49,11 @@ else
     </main>
 
     <!---Modal 2-->
-    <div class="modal fade" id="modalNewMat" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="modalEditNot" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header headerRegister" style="background: #04948c;color: #FFF;">
-                    <h5 class="modal-title" id="titleModal">Materia nueva</h5>
+                    <h5 class="modal-title" id="titleModal">Editar notas</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -61,21 +61,29 @@ else
                 <div class="modal-body">
                     <div class="tile">
                         <div class="tile-body">
-                            <form id="formUsuario" name="formUsuario" class="form-horizontal">
-                                <input type="hidden" id="idUsuario" name="idUsuario2" value="">
+                            <form id="formUsuario2" name="formUsuario2" class="form-horizontal">
+                                <input type="hidden" id="idUsuario2" name="idUsuario2" value="">
                                 <p class="text-primary">Todos los campos son obligatorios.</p>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="txtNombreMateriax">Nombre de la materia</label>
-                                        <input type="text" class="form-control" id="txtNombreMateriax" name="txtNombreMateriax" required="">
+                                        <label for="txtN1">Nota 1</label>
+                                        <input type="number" min="0" max="5" step=".1" class="form-control" id="txtN1" name="txtN1" required="">
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <label for="descripcion">Descripción</label>
-                                    <textarea id="descripcionx" class="form-control" rows="4" name="descripcionx" required=""></textarea>
+                                    <div class="form-group col-md-6">
+                                        <label for="txtN2">Nota 2</label>
+                                        <input type="number" min="0" max="5" step=".1" class="form-control" id="txtN2" name="txtN1" required="">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="txtN3">Nota 3</label>
+                                        <input type="number" min="0" max="5" step=".1" class="form-control" id="txtN3" name="txtN3" required="">
+                                    </div>
                                 </div>
                                 <div class="tile-footer">
-                                    <button id="btnActionForm" onClick="" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+                                    <button id="btnActionForm" onClick="sendEdit();" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
                                     <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
                                 </div>
                             </form>
@@ -145,7 +153,107 @@ else
                 });
         });
         }, false);
+        function fntEditNot(id) {
+                var data = { id: id,curso:@ViewBag.Curso};
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelNot","Admin")",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: data,
+                success: function (d) {
+                    var msg = d.msg;
+                    if (d.Success == true) {
 
+                        document.querySelector("#idUsuario2").value = d.idcal;
+                        document.querySelector("#txtN1").value = d.none;
+                        document.querySelector("#txtN2").value = d.ntwo;
+                        document.querySelector("#txtN3").value = d.ntree;
+                    } else {
+                        swal("Error", {
+                            icon: "error",
+                            title: "Error al procesar la petición",
+                            text: msg,
+                        });
+                        tableNotas.ajax.reload();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    swal("Error", {
+                        icon: "error",
+                        title: "Error al procesar la petición",
+                        text: "Por favor comunique a un administrador en caso de que el error persista.",
+                    });
+
+                }
+            });
+            $('#modalEditNot').modal('show');
+            }
+            function sendEdit() {
+                let id = document.querySelector('#idUsuario2').value;
+                let not1 = document.querySelector('#txtN1').value;
+                let not2 = document.querySelector('#txtN2').value;
+                let not3 = document.querySelector('#txtN3').value;
+                if (id == null) {
+                        swal("Atención", "Error interno con el ID.", "error");
+                        return false;
+                    }
+                if (not1 == '' || not2 == '' || not3 == '' || not1 < 0 || not1 > 5 || not2 < 0 || not2 > 5 || not3 < 0 || not3 > 5) {
+                        swal("Atención", "Todos los campos son obligatorios o esta fuera de rango.", "error");
+                        return false;
+                    }
+
+                    let elementsValid = document.getElementsByClassName("valid");
+                    for (let i = 0; i < elementsValid.length; i++) {
+                        if (elementsValid[i].classList.contains('is-invalid')) {
+                            swal("Atención", "Por favor verifique los campos en rojo.", "error");
+                            return false;
+                        }
+                    }
+                not1 = not1.replace(".", ",");
+                not2 = not2.replace(".", ",");
+                not3 = not3.replace(".", ",");
+                var datax = { id: id, not1: not1, not2: not2, not3: not3 };
+                event.preventDefault();
+                      $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("EditNot", "Admin")",
+                            content: "application/json; charset=utf-8",
+                            dataType: "json",
+                            data: datax,
+                            success: function (d) {
+                                var msg = d.msg;
+                                
+                                if (d.Success == true) {
+                                    swal("Success", {
+                                        icon: "success",
+                                        title: "Éxito al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEditNot').modal("hide");
+                                    tableNotas.ajax.reload();
+                                }else {
+                                    swal("Error", {
+                                        icon: "error",
+                                        title: "Error al procesar la petición",
+                                        text: msg,
+                                    });
+                                    $('#modalEditNot').modal("hide");
+                                    tableNotas.ajax.reload();
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                swal("Error", {
+                                    icon: "error",
+                                    title: "Error al procesar la petición",
+                                    text: "Por favor comunique a un administrador en caso de que el error persista.\n Error:  "+errorThrown,
+                                });
+                                $('#modalEditNot').modal("hide");
+                                tableNotas.ajax.reload();
+                            }
+                        });
+            return false;
+            }
 
 
         </script>

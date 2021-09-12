@@ -2520,6 +2520,7 @@ namespace ProyectoFinal.Controllers
         }
         public ActionResult NotasAlumno(int curso,int id)
         {
+           
             ViewBag.ID = id;
             ViewBag.Curso = curso;
             bool estado = false;
@@ -2534,7 +2535,11 @@ namespace ProyectoFinal.Controllers
                     var query2 = (from al in bdx.alumno
                                   where al.Alum_Doc == id.ToString()
                                   select al).FirstOrDefault();
-                    if (query != null && query.Curs_Nom != ""&&query2!=null&&query2.Alum_Nom!="")
+                    var query3 = (from clas in bdx.clase
+                                  join alc in bdx.alumno_clase on clas.Clas_ID equals alc.Clas_ID
+                                  where alc.Alum_ID == id && alc.Clas_ID == curso
+                                  select clas).FirstOrDefault();
+                    if (query != null && query.Curs_Nom != ""&&query3!=null&&query2!=null&&query2.Alum_Nom!="")
                     {
                         estado = true;
                     }
@@ -2554,6 +2559,7 @@ namespace ProyectoFinal.Controllers
             {
                 return RedirectToAction("Clases/");
             }
+           
         }
         [HttpPost]
         public ActionResult JsonNotasEstudiante(int id,int curso)
@@ -2570,50 +2576,118 @@ namespace ProyectoFinal.Controllers
             skip = start != null ? Convert.ToInt32(start) : 0;
             recordsTotal = 0;
             //Conexion con la base de datos
-            using (sgaEntities db = new sgaEntities())
+            try
             {
-                IQueryable<ModificaNotasAdmin> query = (from cal in db.calificaciones
-                                                         join alc in db.alumno_clase on cal.Alcl_ID equals alc.Alcl_ID
-                                                         join clas in db.clase on alc.Clas_ID equals clas.Clas_ID
-                                                         join per in db.periodo on clas.Per_ID equals per.Per_ID
-                                                         join mat in db.materia on cal.Mat_ID equals mat.Mat_ID
-                                                         where fecha >= per.Per_Ini && fecha <= per.Per_Fin && clas.Curs_ID==curso
-                                                        select new ModificaNotasAdmin
-                                                          {
-                                                              Mat_ID = mat.Mat_ID,
-                                                              Mat_Nom = mat.Mat_Nom,
-                                                              Cal_N1 = cal.Cal_N1,
-                                                              Cal_N2 = cal.Cal_N2,
-                                                              Cal_N3 = cal.Cal_N3,
-                                                              Cal_NF = cal.Cal_NF
-                                                          });
-                if (searchValue != "")
-                    query = query.Where(Est => Est.Mat_Nom.Contains(searchValue));
-                //Sorting    
-                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                using (sgaEntities db = new sgaEntities())
                 {
-                    query = query.OrderBy(sortColumn + " " + sortColumnDir);
-                }
-                if (!sortColumn.Equals("Acciones"))
-                {
-                    recordsTotal = query.Count();
-                }
-                else
-                {
-                    ViewBag.Error = "No se puede ordenar por este tipo de elemento";
-                }
-                if (recordsTotal != 0)
-                {
-                    lst = query.Skip(skip).Take(pageSize).ToList();
-                }
-                foreach (ModificaNotasAdmin buscador in lst)
-                {
-                    buscador.Acciones = "<button class=\"btn btn-info btn-sm \" onclick=\"fntEditNot(" + buscador.Mat_ID + ")\" title=\"Editar notas\"><i class=\"fas fa-tools\" aria-hidden=\"true\"></i></button> "; 
-                }
+                    IQueryable<ModificaNotasAdmin> query = (from cal in db.calificaciones
+                                                            join alc in db.alumno_clase on cal.Alcl_ID equals alc.Alcl_ID
+                                                            join clas in db.clase on alc.Clas_ID equals clas.Clas_ID
+                                                            join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                                            join mat in db.materia on cal.Mat_ID equals mat.Mat_ID
+                                                            where fecha >= per.Per_Ini && fecha <= per.Per_Fin && clas.Curs_ID == curso
+                                                            select new ModificaNotasAdmin
+                                                            {
+                                                                Mat_ID = mat.Mat_ID,
+                                                                Mat_Nom = mat.Mat_Nom,
+                                                                Cal_N1 = cal.Cal_N1.Value,
+                                                                Cal_N2 = cal.Cal_N2.Value,
+                                                                Cal_N3 = cal.Cal_N3.Value,
+                                                                Cal_NF = cal.Cal_NF.Value
+                                                            });
+                    if (searchValue != "")
+                        query = query.Where(Est => Est.Mat_Nom.Contains(searchValue));
+                    //Sorting    
+                    if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDir)))
+                    {
+                        query = query.OrderBy(sortColumn + " " + sortColumnDir);
+                    }
+                    if (!sortColumn.Equals("Acciones"))
+                    {
+                        recordsTotal = query.Count();
+                    }
+                    else
+                    {
+                        ViewBag.Error = "No se puede ordenar por este tipo de elemento";
+                    }
+                    if (recordsTotal != 0)
+                    {
+                        lst = query.Skip(skip).Take(pageSize).ToList();
+                    }
+                    foreach (ModificaNotasAdmin buscador in lst)
+                    {
+                        buscador.Acciones = "<button class=\"btn btn-info btn-sm \" onclick=\"fntEditNot(" + buscador.Mat_ID + ")\" title=\"Editar notas\"><i class=\"fas fa-tools\" aria-hidden=\"true\"></i></button> ";
+                    }
 
+                }
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
             }
-            return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = lst });
+            catch (Exception e)
+            {
+                return Json(new { error=e });
+            }
+          
         }
+        [HttpPost]
+        public ActionResult SelNot(int id,int curso)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
 
+                    var oValidAl = (from d in db.calificaciones
+                                    join alc in db.alumno_clase on d.Alcl_ID equals alc.Alcl_ID
+                                    join clas in db.clase on alc.Clas_ID equals clas.Clas_ID
+                                    where d.Mat_ID == id && clas.Clas_ID==curso
+                                    select d).FirstOrDefault();
+                    if (oValidAl == null)
+                    {
+                        return Json(new { Success = false, msg = "Error al precargar datos." });
+                    }
+
+                    return Json(new
+                    {
+                        Success = true,
+                        idcal=oValidAl.Cal_ID,
+                        none = oValidAl.Cal_N1,
+                        ntwo = oValidAl.Cal_N2,
+                        ntree = oValidAl.Cal_N3
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult EditNot(int id,double not1,double not2,double not3)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    if(Double.IsNaN(not1)|| Double.IsNaN(not2)||Double.IsNaN(not3)) return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: Valores de tipo NaN" });
+                    try
+                    {
+                        var std = db.calificaciones.FirstOrDefault(edit => edit.Cal_ID == id);
+                        std.Cal_N1 = not1;
+                        std.Cal_N2 = not2;
+                        std.Cal_N3 = not3;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Notas actualizadas con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
     }
 }

@@ -15,10 +15,10 @@ namespace ProyectoFinal.Models
     public partial class calificaciones
     {
         public long Cal_ID { get; set; }
-        public double Cal_N1 { get; set; }
-        public double Cal_N2 { get; set; }
-        public double Cal_N3 { get; set; }
-        public double Cal_NF { get; set; }
+        public Nullable<double> Cal_N1 { get; set; }
+        public Nullable<double> Cal_N2 { get; set; }
+        public Nullable<double> Cal_N3 { get; set; }
+        public Nullable<double> Cal_NF { get; set; }
         public long Mat_ID { get; set; }
         public long Alcl_ID { get; set; }
     

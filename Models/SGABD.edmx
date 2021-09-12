@@ -89,10 +89,10 @@
             <PropertyRef Name="Cal_ID" />
           </Key>
           <Property Name="Cal_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Cal_N1" Type="float" Nullable="false" />
-          <Property Name="Cal_N2" Type="float" Nullable="false" />
-          <Property Name="Cal_N3" Type="float" Nullable="false" />
-          <Property Name="Cal_NF" Type="float" Nullable="false" />
+          <Property Name="Cal_N1" Type="float" />
+          <Property Name="Cal_N2" Type="float" />
+          <Property Name="Cal_N3" Type="float" />
+          <Property Name="Cal_NF" Type="float" />
           <Property Name="Mat_ID" Type="bigint" Nullable="false" />
           <Property Name="Alcl_ID" Type="bigint" Nullable="false" />
         </EntityType>
@@ -549,10 +549,10 @@
             <PropertyRef Name="Cal_ID" />
           </Key>
           <Property Name="Cal_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Cal_N1" Type="Double" Nullable="false" />
-          <Property Name="Cal_N2" Type="Double" Nullable="false" />
-          <Property Name="Cal_N3" Type="Double" Nullable="false" />
-          <Property Name="Cal_NF" Type="Double" Nullable="false" />
+          <Property Name="Cal_N1" Type="Double" />
+          <Property Name="Cal_N2" Type="Double" />
+          <Property Name="Cal_N3" Type="Double" />
+          <Property Name="Cal_NF" Type="Double" />
           <Property Name="Mat_ID" Type="Int64" Nullable="false" />
           <NavigationProperty Name="materia" Relationship="Self.FK_calificaciones_materia" FromRole="calificaciones" ToRole="materia" />
           <Property Name="Alcl_ID" Type="Int64" Nullable="false" />
