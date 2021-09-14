@@ -2524,27 +2524,30 @@ namespace ProyectoFinal.Controllers
             ViewBag.ID = id;
             ViewBag.Curso = curso;
             bool estado = false;
+            List<materia> lst = null;
+            var query2=new alumno();
             try
             {
                 using (sgaEntities bdx = new sgaEntities())
                 {
-
+                    
                     var query = (from curs in bdx.curso
                                  where curs.Curs_ID == curso
                                  select curs).FirstOrDefault();
-                    var query2 = (from al in bdx.alumno
+                     query2 = (from al in bdx.alumno
                                   where al.Alum_Doc == id.ToString()
                                   select al).FirstOrDefault();
-                    var query3 = (from clas in bdx.clase
-                                  join alc in bdx.alumno_clase on clas.Clas_ID equals alc.Clas_ID
-                                  where alc.Alum_ID == id && alc.Clas_ID == curso
-                                  select clas).FirstOrDefault();
-                    if (query != null && query.Curs_Nom != ""&&query3!=null&&query2!=null&&query2.Alum_Nom!="")
+                    var query3 = (from alc in bdx.alumno_clase
+                                  where alc.Alum_ID == query2.Alum_ID && alc.Clas_ID != curso
+                                  select alc).FirstOrDefault();
+                  
+                    if (query != null && query.Curs_Nom != ""&&query3==null&&query2!=null&&query2.Alum_Nom!="")
                     {
                         estado = true;
                     }
                    
                 }
+               
             }
             catch (Exception e)
             {
@@ -2553,7 +2556,27 @@ namespace ProyectoFinal.Controllers
             }
             if (estado == true)
             {
+             using(sgaEntities bdx = new sgaEntities())
+                {
+                    lst = (from mat in bdx.materia
+                           join macl in bdx.materia_clase on mat.Mat_ID equals macl.Mat_ID
+                           join cal in bdx.calificaciones on macl.Mat_ID equals cal.Mat_ID
+                           join alc in bdx.alumno_clase on cal.Alcl_ID equals alc.Alcl_ID
+                           where alc.Alum_ID == query2.Alum_ID && alc.Clas_ID == curso && macl.Mat_ID!=cal.Mat_ID
+                           select mat).ToList();
+                }
+                List<SelectListItem> items = lst.ConvertAll(d => {
+                    return new SelectListItem()
+                    {
+                        Text = d.Mat_Nom,
+                        Value = d.Mat_ID.ToString(),
+                        Selected = false
+                    };
+                });
+
+                ViewBag.Items = items;
                 return View();
+            
             }
             else
             {
