@@ -37,6 +37,19 @@ namespace ProyectoFinal.Controllers
             }
             return View();
         }
+        public ActionResult Perfil()
+        {
+           
+            if (Session["User"] != null)
+            {
+                return View();
+            }
+            else
+            {
+                LoginController login = new LoginController();
+                return login.SGA();
+            }
+        }
         public ActionResult Salir()
         {
             FormsAuthentication.SignOut();

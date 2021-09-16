@@ -14,6 +14,7 @@ namespace ProyectoFinal.Controllers
         // GET: Login
         public ActionResult SGA()
         {
+            
             if (Session["User"] == null)
             {
                 return View();

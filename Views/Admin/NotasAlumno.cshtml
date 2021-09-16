@@ -59,12 +59,13 @@
                     </div>
                     <div class="modal-body">
                         <form id="formUsuario" name="formUsuario" class="form-horizontal">
+                            <input type="hidden" id="idUsu" name="idUsu" value="">
                             <p class="text-primary">Todos los campos son obligatorios.</p>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="materia">Materia</label>
-                                    @Html.DropDownList("mat", items, "Seleccione la materia", new { @class = "form-control" })                              
-                                    </div>
+                                    @Html.DropDownList("mat", items, "Seleccione la materia", new { @class = "form-control" })
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -201,6 +202,7 @@
                 let formUsuario = document.querySelector("#formUsuario");
                 formUsuario.onsubmit = function (e) {
                     e.preventDefault();
+                   
                     let mat = document.querySelector('#mat').value;
                     let n1 = document.querySelector('#N1').value;
                     let n2 = document.querySelector('#N2').value;
@@ -218,11 +220,14 @@
                             return false;
                         }
                     }
-
-                   var data = { strIdentificacion: strIdentificacion, strNombre: strNombre, strApellido: strApellido, strEmail: strEmail, Telefono: Telefono,  strPassword: strPassword, StatusRedy: StatusRedy };
+                    n1 = n1.replace(".", ",");
+                    n2 = n2.replace(".", ",");
+                    n3 = n3.replace(".", ",");
+                   
+                   var data = {mat:mat,n1:n1,n2:n2,n3:n3,alum:@ViewBag.ID};
                       $.ajax({
                             type: "POST",
-                            url: "@Url.Action("InsertAdm", "Admin")",
+                            url: "@Url.Action("InsertNot", "Admin")",
                             content: "application/json; charset=utf-8",
                             dataType: "json",
                             data: data,

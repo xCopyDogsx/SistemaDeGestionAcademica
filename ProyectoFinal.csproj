@@ -399,6 +399,7 @@
     <Content Include="Views\Admin\MateriasClase.cshtml" />
     <Content Include="Views\Login\Olvido.cshtml" />
     <Content Include="Views\Admin\NotasAlumno.cshtml" />
+    <Content Include="Views\Panel\Perfil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

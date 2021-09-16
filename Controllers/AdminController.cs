@@ -2560,9 +2560,7 @@ namespace ProyectoFinal.Controllers
                 {
                     lst = (from mat in bdx.materia
                            join macl in bdx.materia_clase on mat.Mat_ID equals macl.Mat_ID
-                           join cal in bdx.calificaciones on macl.Mat_ID equals cal.Mat_ID
-                           join alc in bdx.alumno_clase on cal.Alcl_ID equals alc.Alcl_ID
-                           where alc.Alum_ID == query2.Alum_ID && alc.Clas_ID == curso && macl.Mat_ID!=cal.Mat_ID
+                           where macl.Clas_ID == curso 
                            select mat).ToList();
                 }
                 List<SelectListItem> items = lst.ConvertAll(d => {
@@ -2698,6 +2696,54 @@ namespace ProyectoFinal.Controllers
                         std.Cal_N1 = not1;
                         std.Cal_N2 = not2;
                         std.Cal_N3 = not3;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: " + e.Message });
+                    }
+                }
+                return Json(new { Success = true, msg = "Notas actualizadas con éxito. " });
+            }
+            else
+            {
+                return Json(new { Success = false, msg = "No posee los permisos suficientes para dicha acción" });
+            }
+        }
+        [HttpPost]
+        public ActionResult InsertNot(int mat,double n1,double n2,double n3,string alum)
+        {
+            if (Session["User"] != null && Session["Rol"].Equals("Administrador"))
+            {
+                using (sgaEntities db = new sgaEntities())
+                {
+                    if (Double.IsNaN(n1) || Double.IsNaN(n2) || Double.IsNaN(n3)) return Json(new { Success = false, msg = "No se pudo actualizar en la BD motivo: Valores de tipo NaN" });
+                    try
+                    {
+                        var query2 = (from mata in db.materia
+                                      where mata.Mat_ID==mat
+                                      select mata).FirstOrDefault();
+                        var queryx = (from alc in db.alumno_clase
+                                     join alm in db.alumno on alc.Alum_ID equals alm.Alum_ID
+                                      where alm.Alum_Doc.Equals(alum)
+                                      select alc).FirstOrDefault();
+                        if (queryx == null) { return Json(new { Success = false, msg = "Error al obtener el alumno." }); }
+                        if (query2 == null) { return Json(new { Success = false, msg = "Esa materia no existe" }); }
+                        var query = (from calif in db.calificaciones
+                                     join alc in db.alumno_clase on calif.Alcl_ID equals alc.Alcl_ID
+                                     join clas in db.clase on alc.Clas_ID equals clas.Clas_ID
+                                     join per in db.periodo on clas.Per_ID equals per.Per_ID
+                                     where calif.Mat_ID==query2.Mat_ID && alc.Alum_ID==queryx.Alum_ID && fecha >= per.Per_Ini && fecha <= per.Per_Fin
+                                     select calif).FirstOrDefault();
+                        
+                        if (query != null) { return Json(new { Success = false, msg = "Ya existe un registro de este tipo en la base de datos" }); }
+                        calificaciones cali = new calificaciones();
+                        cali.Cal_N1 = n1;
+                        cali.Cal_N1 = n2;
+                        cali.Cal_N1 = n3;
+                        cali.Mat_ID = query2.Mat_ID;
+                        cali.Alcl_ID = queryx.Alcl_ID;
+                        db.calificaciones.Add(cali);
                         db.SaveChanges();
                     }
                     catch (Exception e)
